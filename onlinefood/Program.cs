@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using onlinefood.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<FirstRunDbContext>(options =>
+    options.UseNpgsql("Host=localhost;Database=onlinefood;Username=postgres;Password=5744"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
