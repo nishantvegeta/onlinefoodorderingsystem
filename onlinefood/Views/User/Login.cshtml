@@ -1,0 +1,36 @@
+﻿@model onlinefood.ViewModels.LoginVm
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<form method = "post">
+    <div class = "card-header">
+        <h2>Login Form</h2>
+    </div>
+    <div class = "card-body">
+        <div class = "form-group">
+            <label asp-for = "Username"></label>
+            <input type = "text" asp-for = "Username" class = "form-control" placeholder="Name"/>
+            <span asp-validation-for = "Username" class = "text-danger"></span>
+        </div>
+        <div class = "form-group">
+            <label asp-for = "Email"></label>
+            <input type= "email" asp-for = "Email" class = "form-control"/>    
+            <span asp-validation-for = "Email" class = "text-danger"></span>
+        </div>
+        <div class = "form-group">
+            <label asp-for = "Password"></label>
+            <input type="password" class = "form-control" asp-for="Password"></textarea>
+            <span asp-validation-for = "Password" class = "text-danger"></span>
+        </div>
+        <div>
+            <p> Dont Have Account? 
+                <a asp-controller="User" asp-action="Register">Register Here</a>
+            </p>
+        </div>
+    </div>
+    <div class = "card-footer">
+        <button class = "btn btn-success">Login</button>
+    </div>
+</form>

@@ -1,13 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using onlinefood.Data;
+using onlinefood.Services;
+using onlinefood.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<FirstRunDbContext>(options =>
     options.UseNpgsql("Host=localhost;Database=onlinefood;Username=postgres;Password=5744"));
 
+builder.Services.AddScoped<IUserService, UserService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/User/Login";
+        options.AccessDeniedPath = "/User/AccessDenied";
+        options.LogoutPath = "/User/Logout";
+    });
 
 var app = builder.Build();
 
@@ -22,6 +36,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

@@ -1,0 +1,50 @@
+﻿@model onlinefood.ViewModels.RegisterVm
+@{
+    ViewData["Title"] = "Register";
+}
+
+<form method = "post">
+    <div class = "card-header">
+        <h2>Register User</h2>
+    </div>
+    <div class = "card-body">
+        <div class = "form-group">
+            <label asp-for = "Username"></label>
+            <input type = "text" asp-for = "Username" class = "form-control" placeholder="Name"/>
+            <span asp-validation-for = "Username" class = "text-danger"></span>
+        </div>
+        <div class = "form-group">
+            <label asp-for = "Email"></label>
+            <input type= "email" asp-for = "Email" class = "form-control"/>    
+            <span asp-validation-for = "Email" class = "text-danger"></span>
+        </div>
+        <div class = "form-group">
+            <label asp-for = "Password"></label>
+            <input type="password" class = "form-control" asp-for="Password"></textarea>
+            <span asp-validation-for = "Password" class = "text-danger"></span>
+        </div>
+        <div>
+            <label asp-for = "ConfirmPassword"></label> 
+            <input type="password" class = "form-control" asp-for="ConfirmPassword"></textarea>
+            <span asp-validation-for = "ConfirmPassword" class = "text-danger"></span>
+        </div>
+        <div>
+            <label asp-for = "IsVerified"></label>
+            <select asp-for = "IsVerified" class = "form-control">
+                <option value = "">Select Verification Status</option>
+                <option value = "True">True</option>
+                <option value = "False">False</option>
+            </select>
+            <span asp-validation-for = "IsVerified" class = "text-danger"></span>
+        </div>
+        <div>
+            <label asp-for = "Phone"></label>
+            <input type="text" class = "form-control" asp-for="Phone"></textarea>
+            <span asp-validation-for = "Phone" class = "text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Role" value="User" />
+    </div>
+    <div class = "card-footer">
+        <button class = "btn btn-success">Create</button>
+    </div>
+</form>
