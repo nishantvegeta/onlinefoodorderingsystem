@@ -58,7 +58,7 @@ public class UserService : IUserService
         transaction.Complete();
     }
 
-    public async Task LoginUser(LoginUserDto UserDto)
+    public async Task<Users> LoginUser(LoginUserDto UserDto)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Name == UserDto.Username || u.Email == UserDto.Email);
         if (user == null)
@@ -74,24 +74,24 @@ public class UserService : IUserService
         var claims = new List<Claim>
         {
             new ("Id", user.UserId.ToString()),
+            new (ClaimTypes.Name, user.Name),
             new (ClaimTypes.Role, user.Role),
         };
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
             new ClaimsPrincipal(claimsIdentity));
+
+        return user;
     }
 
     public async Task Logout()
     {
         var httpContext = httpContextAccessor.HttpContext;
-        if (httpContext != null)
-        {
-            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-        else
+        if (httpContext == null)
         {
             throw new Exception("HttpContext is null");
         }
+        await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
     public async Task<List<ViewUserDto>> GetAllUsers()

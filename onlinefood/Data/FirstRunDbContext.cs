@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using onlinefood.Entity;
+using onlinefood.Services;
 
 namespace onlinefood.Data;
 
@@ -28,7 +29,7 @@ public class FirstRunDbContext : DbContext
                 UserId = 1,
                 Name = "Admin",
                 Email = "admin@admin.com",
-                Password = "admin",
+                Password = "$2a$11$2XobGaY7WQkTwv06j6mCrOaK5nBy65A24veCbWH.3Omj7JGkTTnqC",
                 Role = "Admin",
                 IsVerified = true,
                 CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 04, 11), DateTimeKind.Utc)

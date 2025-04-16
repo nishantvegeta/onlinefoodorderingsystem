@@ -35,15 +35,13 @@ namespace onlinefood.Controllers
 
             try
             {
-                var userDto = new RegisterUserDto
-                {
-                    Username = vm.Username,
-                    Email = vm.Email,
-                    Password = vm.Password,
-                    Role = vm.Role,
-                    IsVerified = vm.IsVerified,
-                    Phone = vm.Phone
-                };
+                var userDto = new RegisterUserDto();
+                userDto.Username = vm.Username;
+                userDto.Email = vm.Email;
+                userDto.Password = vm.Password;
+                userDto.Role = vm.Role;
+                userDto.IsVerified = vm.IsVerified;
+                userDto.Phone = vm.Phone;
 
                 await userService.RegisterUser(userDto);
                 return RedirectToAction("Login");
@@ -71,14 +69,26 @@ namespace onlinefood.Controllers
 
             try
             {
-                var userDto = new LoginUserDto
-                {
-                    Username = vm.Username,
-                    Password = vm.Password
-                };
+                var userDto = new LoginUserDto();
+                userDto.Username = vm.Username;
+                userDto.Email = vm.Email;
+                userDto.Password = vm.Password;
 
-                await userService.LoginUser(userDto);
-                return RedirectToAction("Index", "Home");
+                var user = await userService.LoginUser(userDto);
+
+                if (user.Role == "Admin")
+                {
+                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                }
+                else if (user.Role == "User")
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid user role");
+                    return View(vm);
+                }
             }
             catch (Exception ex)
             {
@@ -119,7 +129,6 @@ namespace onlinefood.Controllers
             }
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             try
