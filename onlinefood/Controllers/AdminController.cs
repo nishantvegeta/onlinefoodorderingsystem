@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace onlinefood.Areas.Admin.Controllers
+namespace onlinefood.Controllers
 {
-    [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {

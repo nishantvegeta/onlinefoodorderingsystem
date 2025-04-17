@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Verify Email";
+}
+
+<h2 class="text-center mt-4">Verify Your Email</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="VerifyEmail" method="post" class="mt-4 w-50 mx-auto">
+    <div class="form-group mb-3">
+        <label for="email">Email</label>
+        <input type="email" name="email" class="form-control" required />
+    </div>
+    <div class="form-group mb-3">
+        <label for="code">Verification Code</label>
+        <input type="text" name="code" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Verify</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}

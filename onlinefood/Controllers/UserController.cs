@@ -5,9 +5,11 @@ using onlinefood.Entity;
 using onlinefood.Data;
 using Microsoft.EntityFrameworkCore;
 using onlinefood.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace onlinefood.Controllers
 {
+    [AllowAnonymous]
     public class UserController : Controller
     {
         private readonly IUserService userService;
@@ -15,11 +17,11 @@ namespace onlinefood.Controllers
 
         public UserController(IUserService userService, FirstRunDbContext dbContext)
         {
-            this.userService = userService;
             this.dbContext = dbContext;
+            this.userService = userService;
         }
 
-        public ActionResult Register()
+        public IActionResult Register()
         {
             var vm = new RegisterVm();
             return View(vm);
@@ -30,7 +32,7 @@ namespace onlinefood.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return View(vm);
             }
 
             try
@@ -39,12 +41,13 @@ namespace onlinefood.Controllers
                 userDto.Username = vm.Username;
                 userDto.Email = vm.Email;
                 userDto.Password = vm.Password;
+                userDto.ConfirmPassword = vm.ConfirmPassword;
                 userDto.Role = vm.Role;
                 userDto.IsVerified = vm.IsVerified;
-                userDto.Phone = vm.Phone;
 
                 await userService.RegisterUser(userDto);
-                return RedirectToAction("Login");
+                TempData["Success"] = "Registration successful. Please login to continue.";
+                return RedirectToAction("VerifyEmail", "User");
             }
             catch (Exception ex)
             {
@@ -53,7 +56,7 @@ namespace onlinefood.Controllers
             }
         }
 
-        public ActionResult Login()
+        public IActionResult Login()
         {
             var vm = new LoginVm();
             return View(vm);
@@ -64,7 +67,7 @@ namespace onlinefood.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return View(vm);
             }
 
             try
@@ -76,9 +79,17 @@ namespace onlinefood.Controllers
 
                 var user = await userService.LoginUser(userDto);
 
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Invalid username or password");
+                    return View(vm);
+                }
+
+                Console.WriteLine($"Logged in user role: {user.Role}");
+
                 if (user.Role == "Admin")
                 {
-                    return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                    return RedirectToAction("Index", "Admin");
                 }
                 else if (user.Role == "User")
                 {
@@ -98,6 +109,7 @@ namespace onlinefood.Controllers
         }
 
         [HttpGet]
+        [Route("user/{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             try
@@ -142,5 +154,45 @@ namespace onlinefood.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult VerifyEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyEmail(string email, string code)
+        {
+            try
+            {
+                var user = await userService.GetUserByEmail(email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "User not found");
+                    return View();
+                }
+
+                var verification = await dbContext.EmailVerifications
+                    .FirstOrDefaultAsync(v => v.UserId == user.Id && v.VerificationCode == code);
+
+                if (verification == null || verification.ExpiryDate < DateTime.UtcNow)
+                {
+                    ModelState.AddModelError("", "Invalid or expired verification code");
+                    return View();
+                }
+
+                verification.IsVerified = true;
+                user.IsVerified = true;
+                await dbContext.SaveChangesAsync();
+                TempData["Success"] = "Email verified successfully. You can now login.";
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return View();
+            }
+        }
     }
 }

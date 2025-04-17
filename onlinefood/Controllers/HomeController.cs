@@ -1,9 +1,11 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using onlinefood.Models;
 
 namespace onlinefood.Controllers;
 
+[Authorize(Roles = "User")]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

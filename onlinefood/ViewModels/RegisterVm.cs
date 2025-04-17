@@ -14,6 +14,7 @@ public class RegisterVm
 
     [Required(ErrorMessage = "Password is required")]
     [DataType(DataType.Password)]
+    [MinLength(6, ErrorMessage = "Password should be at least 6 characters long")]
     public string Password { get; set; }
 
     [Required(ErrorMessage = "Confirm Password is required")]
@@ -24,8 +25,4 @@ public class RegisterVm
     public string Role { get; set; } = "User";
 
     public bool IsVerified { get; set; } = false;
-
-    [Required(ErrorMessage = "Phone number is required")]
-    [Phone(ErrorMessage = "Invalid phone number")]
-    public string Phone { get; set; }
 }

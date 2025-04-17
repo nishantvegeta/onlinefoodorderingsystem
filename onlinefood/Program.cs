@@ -10,6 +10,7 @@ builder.Services.AddDbContext<FirstRunDbContext>(options =>
     options.UseNpgsql("Host=localhost;Database=onlinefood;Username=postgres;Password=5744"));
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,6 +23,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/User/AccessDenied";
         options.LogoutPath = "/User/Logout";
     });
+
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 var app = builder.Build();
 
@@ -43,7 +46,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization()
     .WithStaticAssets();
 
 

@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Login";
 }
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 <form method = "post">
     <div class = "card-header">

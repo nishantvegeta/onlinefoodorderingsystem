@@ -9,6 +9,7 @@ public interface IUserService
     Task RegisterUser(RegisterUserDto UserDto);
     Task<Users> LoginUser(LoginUserDto UserDto);
     Task Logout();
-    Task<ViewUserDto> GetUserById(int id);
+    Task<ViewUserDto> GetUserById(int Id);
     Task<List<ViewUserDto>> GetAllUsers();
+    Task<ViewUserDto> GetUserByEmail(string email);
 }   
