@@ -297,7 +297,7 @@ namespace onlinefood.Migrations
                             Email = "admin@admin.com",
                             IsVerified = true,
                             Name = "Admin",
-                            Password = "$2a$11$2XobGaY7WQkTwv06j6mCrOaK5nBy65A24veCbWH.3Omj7JGkTTnqC",
+                            Password = "$2a$12$vYvdlAR/4cXJBFHs3LsOhuGt75LSUazrHsW7skY/Lc4rr/CsCDfPC",
                             Role = "Admin"
                         });
                 });

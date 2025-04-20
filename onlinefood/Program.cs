@@ -19,9 +19,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/User/Login";
-        options.AccessDeniedPath = "/User/AccessDenied";
-        options.LogoutPath = "/User/Logout";
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.LogoutPath = "/Auth/Logout";
     });
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);

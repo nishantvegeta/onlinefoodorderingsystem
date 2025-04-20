@@ -12,4 +12,5 @@ public interface IUserService
     Task<ViewUserDto> GetUserById(int Id);
     Task<List<ViewUserDto>> GetAllUsers();
     Task<ViewUserDto> GetUserByEmail(string email);
+    Task<bool> VerifyEmail(string email, string code);
 }   

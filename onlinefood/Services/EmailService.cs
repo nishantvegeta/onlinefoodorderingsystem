@@ -1,9 +1,6 @@
-using System;
 using onlinefood.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
-using Microsoft.AspNetCore.Builder.Extensions;
 
 namespace onlinefood.Services;
 
@@ -49,7 +46,11 @@ public class EmailService : IEmailService
                 using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
                 {
                     smtpClient.Credentials = new NetworkCredential(username, password);
-                    smtpClient.EnableSsl = true;
+
+                    smtpClient.EnableSsl = false; // Or true if using SSL (like port 465)
+                    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtpClient.UseDefaultCredentials = false;
+
 
                     try
                     {

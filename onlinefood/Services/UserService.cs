@@ -1,8 +1,6 @@
-using System;
 using onlinefood.Services.Interfaces;
 using onlinefood.Dto.UserDtos;
 using onlinefood.Data;
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using onlinefood.Entity;
@@ -71,9 +69,8 @@ public class UserService : IUserService
         };
 
         await dbContext.Users.AddAsync(user);
-        await dbContext.SaveChangesAsync();
 
-        var verificationToken = new Random().Next(100000, 999999).ToString();
+        var verificationToken = Guid.NewGuid().ToString("N").Substring(0, 6);
 
         var verification = new EmailVerification
         {
@@ -86,8 +83,15 @@ public class UserService : IUserService
         await dbContext.EmailVerifications.AddAsync(verification);
         await dbContext.SaveChangesAsync();
 
-        await emailService.SendEmailAsync(user.Email, "Email Verification",
-            $"<h1>Welcome {user.Name}</h1><p>Please verify your email using this code: {verificationToken}</p>");
+        try
+        {
+            await emailService.SendEmailAsync(user.Email, "Email Verification",
+                $"<h1>Welcome {user.Name}</h1><p>Please verify your email using this code: {verificationToken}</p>");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error sending email: " + ex.Message);
+        }
     }
 
     public async Task<Users> LoginUser(LoginUserDto UserDto)
@@ -168,7 +172,7 @@ public class UserService : IUserService
         };
         return userDto;
     }
-    
+
     public async Task<ViewUserDto> GetUserByEmail(string email)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -186,5 +190,27 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt
         };
         return userDto;
+    }
+    
+    public async Task<bool> VerifyEmail(string email, string code)
+    {
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        var verification = await dbContext.EmailVerifications
+            .FirstOrDefaultAsync(v => v.UserId == user.UserId && v.VerificationCode == code);
+
+        if (verification == null || verification.IsVerified || verification.ExpiryDate < DateTime.UtcNow)
+        {
+            throw new Exception("Invalid or expired verification code");
+        }
+
+        verification.IsVerified = true;
+        user.IsVerified = true;
+
+        await dbContext.SaveChangesAsync();
+        return true;
     }
 }

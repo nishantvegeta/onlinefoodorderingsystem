@@ -1,21 +1,20 @@
-using Microsoft.AspNetCore.Mvc;
-using onlinefood.Services.Interfaces;
-using onlinefood.Dto.UserDtos;
-using onlinefood.Entity;
-using onlinefood.Data;
-using Microsoft.EntityFrameworkCore;
-using onlinefood.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using onlinefood.Data;
+using onlinefood.Dto.UserDtos;
+using onlinefood.Services.Interfaces;
+using onlinefood.ViewModels;
 
 namespace onlinefood.Controllers
 {
     [AllowAnonymous]
-    public class UserController : Controller
+    public class AuthController : Controller
     {
         private readonly IUserService userService;
         private readonly FirstRunDbContext dbContext;
 
-        public UserController(IUserService userService, FirstRunDbContext dbContext)
+        public AuthController(IUserService userService, FirstRunDbContext dbContext)
         {
             this.dbContext = dbContext;
             this.userService = userService;
@@ -47,7 +46,7 @@ namespace onlinefood.Controllers
 
                 await userService.RegisterUser(userDto);
                 TempData["Success"] = "Registration successful. Please login to continue.";
-                return RedirectToAction("VerifyEmail", "User");
+                return RedirectToAction("VerifyEmail", "Auth");
             }
             catch (Exception ex)
             {
@@ -157,41 +156,36 @@ namespace onlinefood.Controllers
         [HttpGet]
         public IActionResult VerifyEmail()
         {
-            return View();
+            var vm = new VerifyEmailVm();
+            return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> VerifyEmail(string email, string code)
+        public async Task<IActionResult> VerifyEmail(VerifyEmailVm vm)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
             try
             {
-                var user = await userService.GetUserByEmail(email);
-
-                if (user == null)
+                var isVerified = await userService.VerifyEmail(vm.Email, vm.Code);
+                if (isVerified)
                 {
-                    ModelState.AddModelError("", "User not found");
-                    return View();
+                    TempData["Success"] = "Email verified successfully.";
+                    return RedirectToAction("Login");
                 }
-
-                var verification = await dbContext.EmailVerifications
-                    .FirstOrDefaultAsync(v => v.UserId == user.Id && v.VerificationCode == code);
-
-                if (verification == null || verification.ExpiryDate < DateTime.UtcNow)
+                else
                 {
-                    ModelState.AddModelError("", "Invalid or expired verification code");
-                    return View();
+                    ModelState.AddModelError("", "Invalid verification code.");
+                    return View(vm);
                 }
-
-                verification.IsVerified = true;
-                user.IsVerified = true;
-                await dbContext.SaveChangesAsync();
-                TempData["Success"] = "Email verified successfully. You can now login.";
-                return RedirectToAction("Login");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                return View();
+                return View(vm);
             }
         }
     }
