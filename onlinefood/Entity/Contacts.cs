@@ -7,7 +7,7 @@ public class Contacts
 {
     [Key]
     public int ContactId { get; set; }
-    
+
     [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; } = string.Empty;
 
@@ -23,4 +23,6 @@ public class Contacts
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
     public int UserId { get; set; }
     public Users User { get; set; } = new Users();
+    
+    public bool IsResolved { get; set; } = false;
 }

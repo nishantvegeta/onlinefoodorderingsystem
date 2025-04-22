@@ -22,6 +22,32 @@ namespace onlinefood.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("onlinefood.Entity.CartItems", b =>
+                {
+                    b.Property<int>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CartItemId"));
+
+                    b.Property<int>("FoodItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("FoodItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("onlinefood.Entity.Categories", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -56,6 +82,9 @@ namespace onlinefood.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsResolved")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -193,12 +222,24 @@ namespace onlinefood.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DeliveryAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -300,6 +341,25 @@ namespace onlinefood.Migrations
                             Password = "$2a$12$vYvdlAR/4cXJBFHs3LsOhuGt75LSUazrHsW7skY/Lc4rr/CsCDfPC",
                             Role = "Admin"
                         });
+                });
+
+            modelBuilder.Entity("onlinefood.Entity.CartItems", b =>
+                {
+                    b.HasOne("onlinefood.Entity.FoodItems", "FoodItem")
+                        .WithMany()
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("onlinefood.Entity.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodItem");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("onlinefood.Entity.Contacts", b =>

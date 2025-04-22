@@ -17,13 +17,14 @@ public class FirstRunDbContext : DbContext
     public DbSet<Payments> Payments { get; set; }
     public DbSet<Contacts> Contacts { get; set; }
     public DbSet<EmailVerification> EmailVerifications { get; set; }
+    public DbSet<CartItems> CartItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Users>().HasData(
-            new Users 
+            new Users
             {
                 UserId = 1,
                 Name = "Admin",

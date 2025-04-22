@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace onlinefood.Controllers
+namespace onlinefood.Areas.Admin.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    [Area("Admin")]
+    public class HomeController : Controller
     {
-        // GET: AdminController
+        // GET: HomeController
         public ActionResult Index()
         {
             return View();

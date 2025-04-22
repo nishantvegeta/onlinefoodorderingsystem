@@ -11,6 +11,11 @@ builder.Services.AddDbContext<FirstRunDbContext>(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFoodItemService, FoodItemService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -44,10 +49,27 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// Redirect root to Customer area
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/Customer/Home/Index");
+        return;
+    }
+    await next();
+});
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization()
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .RequireAuthorization()
     .WithStaticAssets();
-
 
 app.Run();

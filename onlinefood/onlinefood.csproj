@@ -18,4 +18,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas/Admin/Views/Categories/" />
+    <Folder Include="Areas/Admin/Views/FoodItem/" />
+    <Folder Include="Areas/Admin/Views/Shared/" />
+    <Folder Include="wwwroot/customer-template/" />
+  </ItemGroup>
+
 </Project>

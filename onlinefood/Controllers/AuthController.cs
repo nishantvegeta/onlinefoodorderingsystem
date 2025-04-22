@@ -92,7 +92,7 @@ namespace onlinefood.Controllers
                 }
                 else if (user.Role == "User")
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Customer");
                 }
                 else
                 {

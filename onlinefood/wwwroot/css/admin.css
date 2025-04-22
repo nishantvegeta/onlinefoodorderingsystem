@@ -1,0 +1,52 @@
+/* Admin Dashboard Styles */
+.admin-dashboard {
+    padding: 20px 0;
+}
+
+.dashboard-card {
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+.admin-sidebar {
+    background-color: #343a40;
+    color: #fff;
+    min-height: calc(100vh - 56px);
+    padding-top: 20px;
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+}
+
+.admin-sidebar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar .nav-link.active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-content {
+    padding: 20px;
+}
+
+.admin-section-title {
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.admin-table th {
+    background-color: #f8f9fa;
+} 

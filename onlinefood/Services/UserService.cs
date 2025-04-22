@@ -6,6 +6,8 @@ using System.Security.Claims;
 using onlinefood.Entity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Transactions;
+using onlinefood.ViewModels.UserVms;
 
 namespace onlinefood.Services;
 
@@ -191,7 +193,7 @@ public class UserService : IUserService
         };
         return userDto;
     }
-    
+
     public async Task<bool> VerifyEmail(string email, string code)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -212,5 +214,57 @@ public class UserService : IUserService
 
         await dbContext.SaveChangesAsync();
         return true;
+    }
+
+    public async Task UpdateUser(int id, UserUpdateDto userDto)
+    {
+        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        var user = await dbContext.Users.Where(x => x.UserId == id).FirstOrDefaultAsync();
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        user.Name = userDto.Name;
+        user.Email = userDto.Email;
+        user.Password = HashPassword(userDto.Password);
+
+        dbContext.Users.Update(user);
+        await dbContext.SaveChangesAsync();
+        txn.Complete();
+    }
+
+    public async Task DeleteUser(int id)
+    {
+        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        var user = await dbContext.Users.Where(x => x.UserId == id).FirstOrDefaultAsync();
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync();
+        txn.Complete();
+    }
+
+    // Search for users by name 
+    public async Task<IEnumerable<UserVm>> SearchUser(string searchTerm)
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            return new List<UserVm>();
+        }
+
+        return await dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.Name.Contains(searchTerm))
+            .Select(u => new UserVm
+            {
+                Id = u.UserId,
+                Name = u.Name,
+                Email = u.Email,
+                Role = u.Role,
+                IsVerified = u.IsVerified,
+            }).ToListAsync();   
     }
 }
