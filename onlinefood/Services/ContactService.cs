@@ -5,6 +5,7 @@ using onlinefood.Entity;
 using onlinefood.Data;
 using System.Transactions;
 using Microsoft.EntityFrameworkCore;
+using onlinefood.ViewModels.ContactVms;
 
 namespace onlinefood.Services;
 
@@ -34,11 +35,11 @@ public class ContactService : IContactService
         txn.Complete();
     }
 
-    public async Task<List<ContactDto>> GetAllContacts()
+    public async Task<List<ContactVm>> GetAllContacts()
     {
-        var contacts = await dbContext.Contacts.Include(x => x.UserId).ToListAsync();
+        var contacts = await dbContext.Contacts.Include(x => x.User).ToListAsync();
 
-        var contactDtos = contacts.Select(x => new ContactDto
+        var contactDtos = contacts.Select(x => new ContactVm
         {
             ContactId = x.ContactId,
             Name = x.Name,

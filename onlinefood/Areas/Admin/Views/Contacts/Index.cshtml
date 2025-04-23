@@ -1,0 +1,50 @@
+﻿@model IEnumerable<onlinefood.ViewModels.ContactVms.ContactVm>
+@{
+    ViewData["Title"] = "Contact List";
+}
+
+<h2>Contact List</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Resolved</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contact in Model)
+        {
+            <tr>
+                <td>@contact.CustomerName</td>
+                <td>@contact.Email</td>
+                <td>@contact.Message</td>
+                <td>
+                    @if (contact.IsResolved)
+                    {
+                        <span class="text-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">No</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="UpdateStatus" asp-route-id="@contact.ContactId">Update Status</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

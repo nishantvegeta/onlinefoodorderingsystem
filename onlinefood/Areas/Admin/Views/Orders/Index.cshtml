@@ -1,0 +1,41 @@
+﻿@model IEnumerable<onlinefood.ViewModels.OrderVms.OrderVm>
+
+@{
+    ViewData["Title"] = "Order List";
+}
+
+<h2>Order List</h2>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">@TempData["success"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.CustomerName</td>
+                <td>Rs. @order.TotalAmount</td>
+                <td>@order.Status</td>
+                <td>@order.OrderDate.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@order.OrderId">Details</a>
+                    <a class="btn btn-sm btn-primary" asp-action="Update" asp-route-id="@order.OrderId">Update Status</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

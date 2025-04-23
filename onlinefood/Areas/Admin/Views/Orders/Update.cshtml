@@ -1,0 +1,29 @@
+﻿@model onlinefood.ViewModels.OrderVms.UpdateOrderStatusVm
+
+@{
+    ViewData["Title"] = "Update Order Status";
+}
+
+<h2>Update Order Status</h2>
+
+<form asp-action="Update" asp-route-id="@Model.OrderId" method="post">
+    <div class="form-group">
+        <label asp-for="Status" class="control-label">Status</label>
+        <select asp-for="Status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="OrderId" />
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

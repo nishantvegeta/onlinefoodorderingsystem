@@ -1,0 +1,26 @@
+﻿@model onlinefood.ViewModels.CategoryVms.CreateCategoryVm
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<h2>Create New Category</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group form-check mt-2">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label">Is Active</label>
+    </div>
+
+    <div class = "card-footer">
+        <button class = "btn btn-success">Create</button>
+    </div>
+</form>
+

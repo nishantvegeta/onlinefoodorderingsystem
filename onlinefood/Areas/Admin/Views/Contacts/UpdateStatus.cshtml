@@ -1,0 +1,27 @@
+﻿@model onlinefood.ViewModels.ContactVms.UpdateContactVm
+
+@{
+    ViewData["Title"] = "Update Contact Status";
+}
+
+<h2>Update Contact Status</h2>
+
+<form asp-action="UpdateStatus" asp-route-id="@Model.ContactId" method="post">
+    <div class="form-group">
+        <label asp-for="IsResolved" class="control-label">Is Resolved</label>
+        <select asp-for="IsResolved" class="form-control">
+            <option value="true" selected="@Model.IsResolved">Yes</option>
+            <option value="false" selected="!@Model.IsResolved">No</option>
+        </select>
+        <span asp-validation-for="IsResolved" class="text-danger"></span>
+    </div>
+
+    <input type="hidden" asp-for="ContactId" />
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

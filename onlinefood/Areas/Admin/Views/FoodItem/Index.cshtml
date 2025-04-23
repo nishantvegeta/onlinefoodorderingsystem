@@ -1,0 +1,42 @@
+﻿@model IEnumerable<onlinefood.ViewModels.FoodItemVms.FoodItemVm>
+
+@{
+    ViewData["Title"] = "Food Items";
+}
+
+<h2>Food Items</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Add New Food Item</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Active</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.CategoryName</td>
+                <td>Rs. @item.Price</td>
+                <td>
+                    <img src="@item.ImageUrl" alt="Food Item Image" style="width: 100px; height: auto;" />
+                </td>
+                <td>@(item.IsActive ? "Yes" : "No")</td>
+                <td>
+                    <a asp-action="Update" asp-route-id="@item.FoodItemId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.FoodItemId" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

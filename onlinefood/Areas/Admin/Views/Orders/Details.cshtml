@@ -1,0 +1,49 @@
+﻿@model onlinefood.ViewModels.OrderVms.OrderDetailsVm
+
+@{
+    ViewData["Title"] = $"Order Details - #{Model.OrderId}";
+}
+
+<h2 class="mb-3">Order #@Model.OrderId Details</h2>
+
+<div class="mb-4">
+    <h4>Order Info</h4>
+    <p><strong>Status:</strong> @Model.Status</p>
+    <p><strong>Order Date:</strong> @Model.OrderDate.ToString("MMMM dd, yyyy hh:mm tt")</p>
+    <p><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+</div>
+
+<div class="mb-4">
+    <h4>Customer Info</h4>
+    <p><strong>Name:</strong> @Model.CustomerName</p>
+    <p><strong>Email:</strong> @Model.CustomerEmail</p>
+    <p><strong>Phone:</strong> @Model.CustomerPhone</p>
+    <p><strong>Delivery Address:</strong> @Model.DeliveryAddress</p>
+</div>
+
+<div class="mb-4">
+    <h4>Ordered Items</h4>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Food Item</th>
+                <th>Quantity</th>
+                <th>Price (each)</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@item.FoodName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.Total.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Orders</a>

@@ -1,6 +1,7 @@
 using System;
 using onlinefood.Entity;
 using onlinefood.Dto.FoodItemDtos;
+using onlinefood.ViewModels.FoodItemVms;
 
 namespace onlinefood.Services.Interfaces;
 
@@ -9,7 +10,7 @@ public interface IFoodItemService
     Task CreateFoodItem(CreateFoodItemDto foodItemDto);
     Task UpdateFoodItem(int id, UpdateFoodItemDto foodItemDto);
     Task DeleteFoodItem(int id);
-    Task<List<FoodItemDto>> GetAllFoodItems();
+    Task<List<FoodItemVm>> GetAllFoodItems();
     Task<List<FoodItemDto>> SearchFoodItems(string searchTerm);
 
 }

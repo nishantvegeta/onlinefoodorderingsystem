@@ -5,6 +5,7 @@ using onlinefood.Dto.CategoryDtos;
 using Microsoft.EntityFrameworkCore;
 using onlinefood.Data;
 using System.Transactions;
+using onlinefood.ViewModels.CategoryVms;
 
 namespace onlinefood.Services;
 
@@ -16,13 +17,13 @@ public class CategoryService : ICategoryService
         this.dbContext = dbContext;
     }
 
-    public async Task<List<CategoryDto>> GetAllCategories()
+    public async Task<List<CategoryVm>> GetAllCategories()
     {
         var categories = await dbContext.Categories
-            .AsNoTracking()
+            .AsNoTracking().OrderByDescending(c => c.CreatedDate)
             .ToListAsync();
 
-        var dto = categories.Select(c => new CategoryDto
+        var dto = categories.Select(c => new CategoryVm
         {
             CategoryId = c.CategoryId,
             Name = c.Name,
@@ -69,7 +70,7 @@ public class CategoryService : ICategoryService
 
     public async Task Create(CreateCategoryDto categoryDto)
     {
-        var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
         var exists = await dbContext.Categories
             .AsNoTracking()

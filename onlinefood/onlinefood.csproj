@@ -19,9 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas/Admin/Views/Categories/" />
-    <Folder Include="Areas/Admin/Views/FoodItem/" />
-    <Folder Include="Areas/Admin/Views/Shared/" />
     <Folder Include="wwwroot/customer-template/" />
   </ItemGroup>
 

@@ -141,17 +141,16 @@ public class UserService : IUserService
         await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
-    public async Task<List<ViewUserDto>> GetAllUsers()
+    public async Task<List<UserVm>> GetAllUsers()
     {
         var users = await dbContext.Users.ToListAsync();
-        var userDtos = users.Select(u => new ViewUserDto
+        var userDtos = users.Select(u => new UserVm
         {
             Id = u.UserId,
             Name = u.Name,
             Email = u.Email,
             Role = u.Role,
             IsVerified = u.IsVerified,
-            CreatedAt = u.CreatedAt
         }).ToList();
         return userDtos;
     }

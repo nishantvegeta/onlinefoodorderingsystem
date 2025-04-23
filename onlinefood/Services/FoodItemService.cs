@@ -6,6 +6,7 @@ using onlinefood.Entity;
 using System.Transactions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using onlinefood.ViewModels.FoodItemVms;
 
 namespace onlinefood.Services;
 
@@ -94,13 +95,13 @@ public class FoodItemService : IFoodItemService
         txn.Complete();
     }
 
-    public async Task<List<FoodItemDto>> GetAllFoodItems()
+    public async Task<List<FoodItemVm>> GetAllFoodItems()
     {
         var foodItems = await dbContext.FoodItems
             .Include(x => x.Category)
             .ToListAsync();
 
-        var foodItemDtos = foodItems.Select(x => new FoodItemDto
+        var foodItemDtos = foodItems.Select(x => new FoodItemVm
         {
             FoodItemId = x.FoodItemId,
             Name = x.Name,

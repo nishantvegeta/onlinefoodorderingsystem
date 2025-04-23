@@ -10,11 +10,11 @@ namespace onlinefood.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class ContactsContoller : Controller
+    public class ContactsController : Controller
     {
         private readonly FirstRunDbContext dbContext;
         private readonly IContactService contactService;
-        public ContactsContoller(FirstRunDbContext dbContext, IContactService contactService)
+        public ContactsController(FirstRunDbContext dbContext, IContactService contactService)
         {
             this.contactService = contactService;
             this.dbContext = dbContext;

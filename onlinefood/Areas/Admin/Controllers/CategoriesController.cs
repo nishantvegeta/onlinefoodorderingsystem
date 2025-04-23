@@ -32,9 +32,9 @@ namespace onlinefood.Areas.Admin.Controllers
             return View(categories); // Return the categories to the view
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = categoryService.GetAllCategories();
+            var categories = await categoryService.GetAllCategories();
             return View(categories);
         }
 
@@ -45,6 +45,7 @@ namespace onlinefood.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCategoryVm vm)
         {
             try
@@ -60,11 +61,12 @@ namespace onlinefood.Areas.Admin.Controllers
 
 
                 await categoryService.Create(dto);
+                TempData["Success"] = "Category created successfully";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                TempData["Error"] = ex.Message;
                 return View(vm);
             }
         }

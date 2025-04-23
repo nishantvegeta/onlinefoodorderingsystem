@@ -5,6 +5,7 @@ using onlinefood.Data;
 using System.Transactions;
 using onlinefood.Entity;
 using Microsoft.EntityFrameworkCore;
+using onlinefood.ViewModels.OrderVms;
 
 namespace onlinefood.Services.Interfaces;
 
@@ -77,22 +78,19 @@ public class OrderService : IOrderService
         txn.Complete();
     }
 
-    public async Task<List<OrderDto>> GetAllOrders()
+    public async Task<List<OrderVm>> GetAllOrders()
     {
-        var orders = await dbContext.Orders
-            .Select(x => new OrderDto
+        var order = await dbContext.Orders
+            .Select(x => new OrderVm
             {
-                UserFullName = x.User.Name,
                 OrderId = x.OrderId,
+                CustomerName = x.User.Name,
                 TotalAmount = x.TotalAmount,
-                DeliveryAddress = x.DeliveryAddress,
                 OrderDate = x.OrderDate,
                 Status = x.Status,
-                Email = x.Email,
-                Phone = x.Phone
             })
             .ToListAsync();
 
-        return orders;
+        return order;
     }
 }

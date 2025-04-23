@@ -1,0 +1,40 @@
+﻿@model IEnumerable<onlinefood.ViewModels.CategoryVms.CategoryVm>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>Categories</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Category</a>
+</p>
+
+<form asp-action="Search" method="get" class="mb-3">
+    <input type="text" name="searchTerm" class="form-control" placeholder="Search categories" />
+    <button type="submit" class="btn btn-info mt-2">Search</button>
+</form>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.Name</td>
+                <td>@(category.IsActive ? "Active" : "Inactive")</td>
+                <td>
+                    <a asp-action="Update" asp-route-id="@category.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@category.CategoryId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

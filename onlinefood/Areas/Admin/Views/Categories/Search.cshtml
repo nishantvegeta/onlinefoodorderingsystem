@@ -1,0 +1,52 @@
+﻿@model IEnumerable<onlinefood.ViewModels.CategoryVms.SearchCategoryVm>
+
+@{
+    ViewData["Title"] = "Search Categories";
+}
+
+<h2>Search Categories</h2>
+
+<form method="get" asp-action="Search">
+    <div class="form-group">
+        <input type="text" name="searchTerm" class="form-control" placeholder="Search by name..." />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Category ID</th>
+                <th>Name</th>
+                <th>Created Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.CategoryId</td>
+                    <td>@category.Name</td>
+                    <td>@category.CreatedDate.ToShortDateString()</td>
+                    <td>
+                        @if (category.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Inactive</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (Model != null)
+{
+    <div class="alert alert-info mt-3">No categories found.</div>
+}

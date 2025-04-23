@@ -1,0 +1,42 @@
+﻿@model onlinefood.ViewModels.FoodItemVms.CreateFoodItemVm
+
+@{
+    ViewData["Title"] = "Create Food Item";
+}
+
+<h2>Create Food Item</h2>
+
+<form asp-action="Create" enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageFile">Image</label>
+        <input asp-for="ImageFile" class="form-control" type="file" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId">Category</label>
+        <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categorie, "CategoryId", "Name"))" class="form-control"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsActive"></label>
+        <input asp-for="IsActive" type="checkbox" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

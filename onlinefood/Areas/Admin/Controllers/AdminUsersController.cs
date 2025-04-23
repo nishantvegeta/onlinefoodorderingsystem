@@ -33,9 +33,9 @@ namespace onlinefood.Areas.Admin.Controllers
         }
 
         // GET: AdminUsersController
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var users = userService.GetAllUsers();
+            var users = await userService.GetAllUsers();
             return View(users);
         }
 

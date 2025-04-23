@@ -32,9 +32,9 @@ namespace onlinefood.Areas.Admin.Controllers
             return View(foodItems); // Return the food items to the view
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var foodItems = foodItemService.GetAllFoodItems();
+            var foodItems = await foodItemService.GetAllFoodItems();
             return View(foodItems);
         }
 
