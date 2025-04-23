@@ -33,8 +33,22 @@ public class FoodItemService : IFoodItemService
         foodItem.Description = foodItemDto.Description;
         foodItem.Price = foodItemDto.Price;
         foodItem.CategoryId = foodItemDto.CategoryId;
-        foodItem.ImageUrl = foodItemDto.ImageUrl;
         foodItem.IsActive = foodItemDto.IsActive;
+
+        if (foodItemDto.ImageFile != null && foodItemDto.ImageFile.Length > 0)
+        {
+            var uploadsFolder = Path.Combine("wwwroot", "images", "foods");
+            Directory.CreateDirectory(uploadsFolder);
+            var uniqueName = Guid.NewGuid().ToString() + Path.GetExtension(foodItemDto.ImageFile.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await foodItemDto.ImageFile.CopyToAsync(stream);
+            }
+
+            foodItem.ImageUrl = $"/images/foods/{uniqueName}";
+        }
 
         dbContext.FoodItems.Add(foodItem);
         await dbContext.SaveChangesAsync();

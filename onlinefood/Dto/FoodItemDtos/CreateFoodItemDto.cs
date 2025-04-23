@@ -13,7 +13,7 @@ public class CreateFoodItemDto
     [Required(ErrorMessage = "Price is required")]
     public decimal Price { get; set; }
 
-    public string ImageUrl { get; set; } = string.Empty;
+    public IFormFile? ImageFile { get; set; }
 
     public bool IsActive { get; set; } = true;
 

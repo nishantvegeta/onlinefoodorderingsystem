@@ -68,7 +68,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 dto.Name = vm.Name;
                 dto.Description = vm.Description;
                 dto.Price = vm.Price;
-                dto.ImageUrl = vm.ImageUrl;
+                dto.ImageFile = vm.ImageFile;
                 dto.CategoryId = vm.CategoryId;
                 dto.IsActive = vm.IsActive;
 

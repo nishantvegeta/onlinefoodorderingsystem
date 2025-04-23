@@ -15,7 +15,7 @@ public class CreateFoodItemVm
     [Required]
     public decimal Price { get; set; }
 
-    public string ImageUrl { get; set; } = string.Empty;
+    public IFormFile? ImageFile { get; set; }
 
     [Required]
     public int CategoryId { get; set; }
