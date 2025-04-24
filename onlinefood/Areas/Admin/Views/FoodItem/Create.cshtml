@@ -6,37 +6,55 @@
 
 <h2>Create Food Item</h2>
 
-<form asp-action="Create" enctype="multipart/form-data" method="post">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    
+
     <div class="form-group">
         <label asp-for="Description"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Price"></label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ImageFile">Image</label>
-        <input asp-for="ImageFile" class="form-control" type="file" />
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="CategoryId">Category</label>
-        <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categorie, "CategoryId", "Name"))" class="form-control"></select>
+        <select asp-for="CategoryId" asp-items="Model.CategoriesSelectList()" class="form-control">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="IsActive"></label>
-        <input asp-for="IsActive" type="checkbox" />
+        <label asp-for="ImageFile">Image</label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
     </div>
 
+    <div class="form-check">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="IsFeatured" class="form-check-input" />
+        <label asp-for="IsFeatured" class="form-check-label"></label>
+    </div>
+
+    <br />
+
     <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

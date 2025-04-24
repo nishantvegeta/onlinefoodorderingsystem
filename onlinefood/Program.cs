@@ -62,6 +62,8 @@ app.Use(async (context, next) =>
 
 app.MapStaticAssets();
 
+app.UseStaticFiles();
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

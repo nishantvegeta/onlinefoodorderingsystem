@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using onlinefood.Services.Interfaces;
 using onlinefood.ViewModels.FoodItemVms;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace onlinefood.Areas.Admin.Controllers
 {
@@ -23,13 +24,25 @@ namespace onlinefood.Areas.Admin.Controllers
         //search food item
         public async Task<IActionResult> Search(string searchTerm)
         {
-            var foodItems = await foodItemService.SearchFoodItems(searchTerm); // Await the Task to get the result
-            if (foodItems == null || !foodItems.Any()) // Now you can use .Any() on the collection
+            if (string.IsNullOrEmpty(searchTerm))
             {
-                return NotFound("No food items found");
+                return BadRequest("Search term cannot be empty");
             }
 
-            return View(foodItems); // Return the food items to the view
+            try
+            {
+                var foodItems = await foodItemService.SearchFoodItems(searchTerm); // Await the Task to get the result
+                if (foodItems == null || !foodItems.Any()) // Now you can use .Any() on the collection
+                {
+                    return NotFound("No food items found");
+                }
+
+                return View(foodItems); // Return the food items to the view
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<IActionResult> Index()
@@ -71,8 +84,10 @@ namespace onlinefood.Areas.Admin.Controllers
                 dto.ImageFile = vm.ImageFile;
                 dto.CategoryId = vm.CategoryId;
                 dto.IsActive = vm.IsActive;
+                dto.IsFeatured = vm.IsFeatured;
 
                 await foodItemService.CreateFoodItem(dto);
+                TempData["Success"] = "Food item created successfully";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -96,6 +111,8 @@ namespace onlinefood.Areas.Admin.Controllers
                 var categories = await dbContext.Categories.OrderBy(x => x.Name)
                     .ToListAsync();
 
+                ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
+
                 var vm = new UpdateFoodItemVm();
                 vm.Name = foodItem.Name;
                 vm.Description = foodItem.Description;
@@ -103,6 +120,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 vm.ImageUrl = foodItem.ImageUrl;
                 vm.IsActive = foodItem.IsActive;
                 vm.CategoryId = foodItem.CategoryId;
+                vm.IsFeatured = foodItem.IsFeatured;
 
                 return View(vm);
             }
@@ -133,9 +151,10 @@ namespace onlinefood.Areas.Admin.Controllers
                 dto.Name = vm.Name;
                 dto.Description = vm.Description;
                 dto.Price = vm.Price;
-                dto.ImageUrl = vm.ImageUrl;
+                dto.ImageFile = vm.ImageFile;
                 dto.CategoryId = vm.CategoryId;
                 dto.IsActive = vm.IsActive;
+                dto.IsFeatured = vm.IsFeatured;
 
                 await foodItemService.UpdateFoodItem(id, dto);
                 return RedirectToAction("Index");

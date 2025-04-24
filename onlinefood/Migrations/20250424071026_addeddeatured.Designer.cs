@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using onlinefood.Data;
@@ -11,9 +12,11 @@ using onlinefood.Data;
 namespace onlinefood.Migrations
 {
     [DbContext(typeof(FirstRunDbContext))]
-    partial class FirstRunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250424071026_addeddeatured")]
+    partial class addeddeatured
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,9 +169,6 @@ namespace onlinefood.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsFeatured")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")

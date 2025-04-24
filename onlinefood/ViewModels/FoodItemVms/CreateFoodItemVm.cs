@@ -13,6 +13,7 @@ public class CreateFoodItemVm
     public string Description { get; set; } = string.Empty;
 
     [Required]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero")]
     public decimal Price { get; set; }
 
     public IFormFile? ImageFile { get; set; }
@@ -21,13 +22,15 @@ public class CreateFoodItemVm
     public int CategoryId { get; set; }
 
     public bool IsActive { get; set; } = true;
+    
+    public bool IsFeatured { get; set; } = false;
 
     public SelectList CategoriesSelectList()
         => new SelectList(
             Categorie,
             nameof(Categories.CategoryId),
             nameof(Categories.Name),
-            CategoryId   
+            CategoryId
         );
 
     public List<Categories> Categorie;

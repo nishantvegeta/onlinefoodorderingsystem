@@ -12,5 +12,5 @@ public interface IFoodItemService
     Task DeleteFoodItem(int id);
     Task<List<FoodItemVm>> GetAllFoodItems();
     Task<List<FoodItemDto>> SearchFoodItems(string searchTerm);
-
+    Task<List<FoodItemVm>> GetFeaturedFoodItems();
 }

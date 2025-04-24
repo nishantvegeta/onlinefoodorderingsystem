@@ -20,4 +20,5 @@ public class FoodItems
     public int CategoryId { get; set; }
     public Categories Category { get; set; }
 
+    public bool IsFeatured { get; set; }
 }
