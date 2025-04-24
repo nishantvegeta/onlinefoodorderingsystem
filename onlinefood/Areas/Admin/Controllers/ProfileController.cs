@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using onlinefood.Data;
+using onlinefood.ViewModels.AdminVms;
 
 namespace onlinefood.Areas.Admin.Controllers
 {
@@ -30,8 +31,16 @@ namespace onlinefood.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            var vm = new AdminProfileVm
+            {
+                Name = admin.Name,
+                Email = admin.Email,
+                Role = admin.Role,
+                IsVerified = admin.IsVerified,
+                CreatedAt = admin.CreatedAt
+            };
 
-            return View(admin);
+            return View(vm);
         }
 
     }

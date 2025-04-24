@@ -1,31 +1,29 @@
-﻿@model onlinefood.Entity.Users
-
+﻿@model onlinefood.ViewModels.AdminVms.AdminProfileVm
 @{
     ViewData["Title"] = "Admin Profile";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-4">
+    <h2>Admin Profile</h2>
 
-<div class="card shadow p-4">
-    <h4>Admin Info</h4>
-    <dl class="row">
+    <div class="card shadow-sm p-4">
+        <h4>Admin Info</h4>
+        <hr />
 
-        <dt class="col-sm-3">Profile Picture:</dt>
-        <img src="~/images/admin-avatar.png" alt="Admin Profile" class="img-thumbnail" style="max-width: 200px;" />
+        <div class="d-flex align-items-center gap-4">
+            <img src="~/images/admin-avatar.png" alt="Admin" class="img-thumbnail rounded-circle shadow" style="width: 120px;" />
+            <h5 class="mb-0">Name: @Model.Name</h5>
+        </div>
 
-        <dt class="col-sm-3">Name:</dt>
-        <dd class="col-sm-9">@Model.Name</dd>
-
-        <dt class="col-sm-3">Email:</dt>
-        <dd class="col-sm-9">@Model.Email</dd>
-
-        <dt class="col-sm-3">Role:</dt>
-        <dd class="col-sm-9">@Model.Role</dd>
-
-        <dt class="col-sm-3">Verified:</dt>
-        <dd class="col-sm-9">@Model.IsVerified</dd>
-
-        <dt class="col-sm-3">Created At:</dt>
-        <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd")</dd>
-    </dl>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Role:</strong> @Model.Role</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Verified:</strong> @(Model.IsVerified ? "Yes" : "No")</p>
+                <p><strong>Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+    </div>
 </div>
