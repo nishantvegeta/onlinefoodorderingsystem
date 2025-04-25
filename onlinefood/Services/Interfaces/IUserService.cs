@@ -14,10 +14,8 @@ public interface IUserService
     Task<List<UserVm>> GetAllUsers();
     Task<ViewUserDto> GetUserByEmail(string email);
     Task<bool> VerifyEmail(string email, string code);
-
     Task UpdateUser(int id, UserUpdateDto userUpdateDto);
-
     Task DeleteUser(int id);
-
     Task<IEnumerable<UserVm>> SearchUser(string searchTerm);
+    int GetCurrentUserId();
 }   

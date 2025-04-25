@@ -3,13 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace onlinefood.Dto.OrderDtos;
 
-public class CreateOrderDto
+public class PlaceOrderDto
 {
-    [Required]
-    public int UserId { get; set; }
-
-    public string UserName { get; set; }
-
     [Required]
     public decimal TotalAmount { get; set; }
 
@@ -23,4 +18,7 @@ public class CreateOrderDto
     [Required(ErrorMessage = "Phone number is required")]
     [Phone]
     public string Phone { get; set; }
+
+    [Required]
+    public List<int> CartItemIds { get; set; }
 }

@@ -91,7 +91,32 @@ public class CartService : ICartService
 
     public async Task PlaceOrder(int userId)
     {
-        // Get the cart items for the user
+        var cartItems = await dbContext.CartItems
+            .Include(ci => ci.FoodItem)
+            .Where(ci => ci.UserId == userId)
+            .ToListAsync();
+
+        if (cartItems.Count == 0)
+        {
+            throw new Exception("Cart is empty");
+        }
+
+        var order = new Orders
+        {
+            UserId = userId,
+            OrderDate = DateTime.Now,
+            TotalAmount = cartItems.Sum(ci => ci.Quantity * ci.FoodItem.Price),
+            OrderDetails = cartItems.Select(ci => new OrderDetails
+            {
+                FoodItemId = ci.FoodItemId,
+                Quantity = ci.Quantity,
+                PriceAtOrderTimex = ci.FoodItem.Price
+            }).ToList(),
+        };
+
+        dbContext.Orders.Add(order);
+        dbContext.CartItems.RemoveRange(cartItems);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateQuantity(int foodItemId, int quantity)
@@ -105,15 +130,12 @@ public class CartService : ICartService
         }
     }
 
-    public async Task<decimal> GetCartTotal()
+    public async Task<int> GetCartItemCount(int userId)
     {
-        var total = await dbContext.CartItems
-            .Include(ci => ci.FoodItem)
-            .SumAsync(ci => ci.Quantity * ci.FoodItem.Price);
+        var count = await dbContext.CartItems
+            .Where(ci => ci.UserId == userId)
+            .SumAsync(ci => ci.Quantity);
 
-        return total;
+        return count;
     }
-
-    
-
 }

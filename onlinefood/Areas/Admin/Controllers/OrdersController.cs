@@ -15,8 +15,10 @@ namespace onlinefood.Areas.Admin.Controllers
 
         private readonly FirstRunDbContext dbContext;
         private readonly IOrderService orderService;
-        public OrdersController(FirstRunDbContext dbContext, IOrderService orderService)
+        private readonly IUserService userService;
+        public OrdersController(FirstRunDbContext dbContext, IOrderService orderService, IUserService userService)
         {
+            this.userService = userService;
             this.orderService = orderService;
             this.dbContext = dbContext;
         }
@@ -31,18 +33,17 @@ namespace onlinefood.Areas.Admin.Controllers
         // view order details
         public async Task<IActionResult> Details(int id)
         {
+            var userId = userService.GetCurrentUserId();
+
             try
             {
-                var order = await orderService.GetOrderById(id);
-                if (order == null)
-                {
-                    return NotFound();
-                }
-                return View(order);
+                var order = await orderService.GetOrderById(userId, id); // Make sure this only returns the user's order
+                return View(order); // Pass OrderVm to view
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                TempData["error"] = ex.Message;
+                return RedirectToAction("Index"); // Redirect to list of orders or error page
             }
         }
 

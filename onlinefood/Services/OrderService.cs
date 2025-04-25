@@ -1,96 +1,145 @@
 using System;
-using onlinefood.Dto.OrderDtos;
-using onlinefood.Services.Interfaces;
-using onlinefood.Data;
 using System.Transactions;
-using onlinefood.Entity;
 using Microsoft.EntityFrameworkCore;
+using onlinefood.Data;
+using onlinefood.Dto.OrderDtos;
+using onlinefood.Entity;
+using onlinefood.Services.Interfaces;
 using onlinefood.ViewModels.OrderVms;
 
-namespace onlinefood.Services.Interfaces;
-
-public class OrderService : IOrderService
+namespace onlinefood.Services.Interfaces
 {
-    private readonly FirstRunDbContext dbContext;
-
-    public OrderService(FirstRunDbContext dbContext)
+    public class OrderService : IOrderService
     {
-        this.dbContext = dbContext;
-    }
+        private readonly FirstRunDbContext dbContext;
 
-    public async Task CreateOrder(CreateOrderDto dto)
-    {
-        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-
-        var order = new Orders();
-        order.UserId = dto.UserId;
-        order.CustomerName = dto.UserName;
-        order.DeliveryAddress = dto.DeliveryAddress;
-        order.TotalAmount = dto.TotalAmount;
-        order.OrderDate = DateTime.UtcNow;
-        order.Status = "Pending";
-
-        dbContext.Orders.Add(order);
-        await dbContext.SaveChangesAsync();
-        txn.Complete();
-    }
-
-    public async Task<OrderDto> GetOrderById(int orderId)
-    {
-        var order = await dbContext.Orders
-            .Where(x => x.OrderId == orderId)
-            .Select(x => new OrderDto
-            {
-                OrderId = x.OrderId,
-                UserFullName = x.User.Name,
-                TotalAmount = x.TotalAmount,
-                DeliveryAddress = x.DeliveryAddress,
-                OrderDate = x.OrderDate,
-                Status = x.Status,
-                Email = x.Email,
-                Phone = x.Phone
-            })
-            .FirstOrDefaultAsync();
-
-        if (order == null)
+        public OrderService(FirstRunDbContext dbContext)
         {
-            throw new Exception("Order not found");
+            this.dbContext = dbContext;
         }
 
-        return order;
-    }
-
-    public async Task UpdateOrderStatus(UpdateOrderStatusDto dto)
-    {
-        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-
-        var order = await dbContext.Orders
-            .Where(x => x.OrderId == dto.OrderId)
-            .FirstOrDefaultAsync();
-
-        if (order == null)
+        public async Task CreateOrder(PlaceOrderDto dto, int userId)
         {
-            throw new Exception("Order not found");
+            using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            var user = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+                throw new Exception("User not found");
+
+
+            // Get user cart items
+            var cartItems = await dbContext.CartItems
+                .Include(ci => ci.FoodItem)
+                .Where(ci => ci.UserId == userId)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+                throw new Exception("Cart is empty");
+
+            var order = new Orders
+            {
+                UserId = userId,
+                CustomerName = user.Name,
+                DeliveryAddress = dto.DeliveryAddress,
+                TotalAmount = dto.TotalAmount,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                OrderDate = DateTime.UtcNow,
+                Status = "Pending"
+            };
+
+            await dbContext.Orders.AddAsync(order);
+            await dbContext.SaveChangesAsync();
+
+            // Create order items from cart items
+            var orderItems = cartItems.Select(ci => new OrderDetails
+            {
+                OrderId = order.OrderId,
+                FoodItemId = ci.FoodItemId,
+                Quantity = ci.Quantity,
+                PriceAtOrderTimex = ci.FoodItem.Price,
+            }).ToList();
+
+            await dbContext.OrderDetails.AddRangeAsync(orderItems);
+
+            // Clear the cart
+            dbContext.CartItems.RemoveRange(cartItems);
+
+            await dbContext.SaveChangesAsync();
+            txn.Complete();
         }
 
-        order.Status = dto.Status;
-        await dbContext.SaveChangesAsync();
-        txn.Complete();
-    }
+        public async Task<OrderVm> GetOrderById(int userId, int orderId)
+        {
+            var order = await dbContext.Orders
+                .Where(x => x.UserId == userId && x.OrderId == orderId)
+                .Select(x => new OrderVm
+                {
+                    OrderId = x.OrderId,
+                    CustomerName = x.CustomerName,
+                    DeliveryAddress = x.DeliveryAddress,
+                    TotalAmount = x.TotalAmount,
+                    OrderDate = x.OrderDate,
+                    Status = x.Status,
+                })
+                .FirstOrDefaultAsync();
 
-    public async Task<List<OrderVm>> GetAllOrders()
-    {
-        var order = await dbContext.Orders
-            .Select(x => new OrderVm
-            {
-                OrderId = x.OrderId,
-                CustomerName = x.User.Name,
-                TotalAmount = x.TotalAmount,
-                OrderDate = x.OrderDate,
-                Status = x.Status,
-            })
-            .ToListAsync();
+            if (order == null)
+                throw new Exception("Order not found");
 
-        return order;
+            return order;
+        }
+
+        public async Task UpdateOrderStatus(UpdateOrderStatusDto dto)
+        {
+            using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.OrderId == dto.OrderId);
+
+            if (order == null)
+                throw new Exception("Order not found");
+
+            order.Status = dto.Status;
+
+            await dbContext.SaveChangesAsync();
+            txn.Complete();
+        }
+
+        public async Task<List<OrderVm>> GetAllOrders()
+        {
+            var orders = await dbContext.Orders
+                .Include(o => o.User)
+                .Select(x => new OrderVm
+                {
+                    OrderId = x.OrderId,
+                    CustomerName = x.User.Name,
+                    TotalAmount = x.TotalAmount,
+                    OrderDate = x.OrderDate,
+                    Status = x.Status,
+                })
+                .ToListAsync();
+
+            return orders;
+        }
+        
+        public async Task<List<OrderVm>> GetOrdersByUserId(int userId)
+        {
+            var orders = await dbContext.Orders
+                .Where(x => x.UserId == userId)
+                .Select(x => new OrderVm
+                {
+                    OrderId = x.OrderId,
+                    CustomerName = x.CustomerName,
+                    TotalAmount = x.TotalAmount,
+                    OrderDate = x.OrderDate,
+                    Status = x.Status,
+                })
+                .ToListAsync();
+
+            return orders;
+        }
     }
 }

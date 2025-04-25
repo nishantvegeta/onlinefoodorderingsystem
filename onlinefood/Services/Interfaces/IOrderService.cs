@@ -6,8 +6,10 @@ namespace onlinefood.Services.Interfaces;
 
 public interface IOrderService
 {
-    Task CreateOrder(CreateOrderDto dto);
-    Task<OrderDto> GetOrderById(int orderId);
+    Task CreateOrder(PlaceOrderDto dto, int userId);
+    Task<OrderVm> GetOrderById(int userId, int orderId);
     Task UpdateOrderStatus(UpdateOrderStatusDto dto);
     Task<List<OrderVm>> GetAllOrders();
+    // Get orders by user ID (for customer use)
+    Task<List<OrderVm>> GetOrdersByUserId(int userId); // Fetch orders specific to the logged-in user
 }

@@ -264,6 +264,16 @@ public class UserService : IUserService
                 Email = u.Email,
                 Role = u.Role,
                 IsVerified = u.IsVerified,
-            }).ToListAsync();   
+            }).ToListAsync();
+    }
+    
+    public int GetCurrentUserId()
+    {
+        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);;
+        if (int.TryParse(userIdClaim, out var userId))
+        {
+            return userId;
+        }
+        return 0; // Return 0 or handle error if user not found
     }
 }

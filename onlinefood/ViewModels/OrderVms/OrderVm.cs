@@ -9,4 +9,5 @@ public class OrderVm
     public string CustomerName { get; set; }
     public string Status { get; set; }
     public DateTime OrderDate { get; set; }
+    public string DeliveryAddress { get; set; }
 }

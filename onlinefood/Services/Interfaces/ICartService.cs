@@ -12,5 +12,5 @@ public interface ICartService
     Task<decimal> GetTotalPrice();
     Task PlaceOrder(int userId);
     Task UpdateQuantity(int foodItemId, int quantity);
-    Task<decimal> GetCartTotal();
+    Task<int> GetCartItemCount(int userId);
 }
