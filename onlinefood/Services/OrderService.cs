@@ -124,7 +124,7 @@ namespace onlinefood.Services.Interfaces
 
             return orders;
         }
-        
+
         public async Task<List<OrderVm>> GetOrdersByUserId(int userId)
         {
             var orders = await dbContext.Orders
@@ -140,6 +140,21 @@ namespace onlinefood.Services.Interfaces
                 .ToListAsync();
 
             return orders;
+        }
+
+        public async Task CancelOrder(int orderId, int userId)
+        {
+            var order = await dbContext.Orders
+                .FirstOrDefaultAsync(x => x.OrderId == orderId && x.UserId == userId);
+
+            if (order == null)
+            {
+                throw new Exception("Order not found");
+            }
+
+            order.Status = "Cancelled";
+            dbContext.Orders.Update(order);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

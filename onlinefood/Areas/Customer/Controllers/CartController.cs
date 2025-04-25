@@ -21,8 +21,9 @@ namespace onlinefood.Areas.Customer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var cartItems = await cartService.GetCartItems();
-            var totalPrice = await cartService.GetTotalPrice();
+            var userId = userService.GetCurrentUserId();
+            var cartItems = await cartService.GetCartItems(userId);
+            var totalPrice = await cartService.GetTotalPrice(userId);
 
             var cartViewModel = new CartVm
             {
@@ -55,30 +56,34 @@ namespace onlinefood.Areas.Customer.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int foodItemId)
         {
+            var userId = userService.GetCurrentUserId();
+
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            await cartService.RemoveFromCart(foodItemId);
+            await cartService.RemoveFromCart(userId,foodItemId);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> ClearCart()
         {
+            var userId = userService.GetCurrentUserId();
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            await cartService.ClearCart();
+            await cartService.ClearCart(userId);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateQuantity(int foodItemId, int quantity)
         {
+            var userId = userService.GetCurrentUserId();
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Auth");
@@ -90,7 +95,7 @@ namespace onlinefood.Areas.Customer.Controllers
                 return RedirectToAction("Index");
             }
 
-            await cartService.UpdateQuantity(foodItemId, quantity);
+            await cartService.UpdateQuantity(userId,foodItemId, quantity);
             return RedirectToAction("Index");
         }
 
@@ -110,12 +115,13 @@ namespace onlinefood.Areas.Customer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCartItems()
         {
+            var userId = userService.GetCurrentUserId();
             if (User?.Identity == null || !User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            var cartItems = await cartService.GetCartItems();
+            var cartItems = await cartService.GetCartItems(userId);
             return Json(new { cartItems = cartItems });
         }
     }

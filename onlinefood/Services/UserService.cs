@@ -24,12 +24,12 @@ public class UserService : IUserService
         this.dbContext = dbContext;
     }
 
-    private string HashPassword(string password)
+    public string HashPassword(string password)
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
 
-    private bool VerifyPassword(string enteredPassword, string hashedPassword)
+    public bool VerifyPassword(string enteredPassword, string hashedPassword)
     {
         return BCrypt.Net.BCrypt.Verify(enteredPassword, hashedPassword);
     }
@@ -155,23 +155,22 @@ public class UserService : IUserService
         return userDtos;
     }
 
-    public async Task<ViewUserDto> GetUserById(int id)
+    public async Task<UserVm> GetUserById(int id)
     {
         var user = await dbContext.Users.FindAsync(id);
         if (user == null)
         {
             throw new Exception("User not found");
         }
-        var userDto = new ViewUserDto
+        var vm = new UserVm
         {
             Id = user.UserId,
             Name = user.Name,
             Email = user.Email,
             Role = user.Role,
             IsVerified = user.IsVerified,
-            CreatedAt = user.CreatedAt
         };
-        return userDto;
+        return vm;
     }
 
     public async Task<ViewUserDto> GetUserByEmail(string email)

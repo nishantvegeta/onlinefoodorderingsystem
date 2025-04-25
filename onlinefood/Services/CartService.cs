@@ -47,9 +47,11 @@ public class CartService : ICartService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveFromCart(int foodItemId)
+    public async Task RemoveFromCart(int userId, int foodItemId)
     {
-        var cartItem = await dbContext.CartItems.FindAsync(foodItemId);
+        var cartItem = await dbContext.CartItems
+            .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.FoodItemId == foodItemId);
+
         if (cartItem != null)
         {
             dbContext.CartItems.Remove(cartItem);
@@ -57,17 +59,24 @@ public class CartService : ICartService
         }
     }
 
-    public async Task ClearCart()
+    public async Task ClearCart(int userId)
     {
-        var cartItems = await dbContext.CartItems.ToListAsync();
-        dbContext.CartItems.RemoveRange(cartItems);
-        await dbContext.SaveChangesAsync();
+        var cartItems = await dbContext.CartItems
+            .Where(ci => ci.UserId == userId)
+            .ToListAsync();
+
+        if (cartItems.Count > 0)
+        {
+            dbContext.CartItems.RemoveRange(cartItems);
+            await dbContext.SaveChangesAsync();
+        }
     }
 
-    public async Task<List<CartItemVm>> GetCartItems()
+    public async Task<List<CartItemVm>> GetCartItems(int userId)
     {
         var cartItems = await dbContext.CartItems
             .Include(ci => ci.FoodItem)
+            .Where(ci => ci.UserId == userId)
             .Select(ci => new CartItemVm
             {
                 FoodItemId = ci.FoodItemId,
@@ -80,10 +89,11 @@ public class CartService : ICartService
         return cartItems;
     }
 
-    public async Task<decimal> GetTotalPrice()
+    public async Task<decimal> GetTotalPrice(int userId)
     {
         var total = await dbContext.CartItems
             .Include(ci => ci.FoodItem)
+            .Where(ci => ci.UserId == userId)
             .SumAsync(ci => ci.Quantity * ci.FoodItem.Price);
 
         return total;
@@ -119,9 +129,11 @@ public class CartService : ICartService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task UpdateQuantity(int foodItemId, int quantity)
+    public async Task UpdateQuantity(int userId, int foodItemId, int quantity)
     {
-        var cartItem = await dbContext.CartItems.FindAsync(foodItemId);
+        var cartItem = await dbContext.CartItems
+            .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.FoodItemId == foodItemId);
+
         if (cartItem != null)
         {
             cartItem.Quantity = quantity;

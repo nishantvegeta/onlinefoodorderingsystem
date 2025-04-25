@@ -6,9 +6,13 @@
 
 <h2>Order List</h2>
 
-@if (TempData["success"] != null)
+@if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">@TempData["success"]</div>
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
 <table class="table table-striped">

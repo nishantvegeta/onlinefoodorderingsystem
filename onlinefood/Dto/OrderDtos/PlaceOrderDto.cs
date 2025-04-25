@@ -1,10 +1,15 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using onlinefood.Enums;
 
 namespace onlinefood.Dto.OrderDtos;
 
 public class PlaceOrderDto
 {
+    [Required]
+    public int UserId { get; set; }
+    public string UserName { get; set; } = string.Empty;
+
     [Required]
     public decimal TotalAmount { get; set; }
 
@@ -21,4 +26,7 @@ public class PlaceOrderDto
 
     [Required]
     public List<int> CartItemIds { get; set; }
+
+    [Required(ErrorMessage = "Select a payment method")]
+    public PaymentMethod PaymentMethod { get; set; } // Assuming PaymentMethod is an enum, use the appropriate type here
 }

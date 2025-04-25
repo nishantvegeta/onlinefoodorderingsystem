@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using onlinefood.Data;
 using onlinefood.Dto.UserDtos;
 using onlinefood.Services.Interfaces;
-using onlinefood.ViewModels;
+using onlinefood.ViewModels.AccountVms;
 
 namespace onlinefood.Controllers
 {

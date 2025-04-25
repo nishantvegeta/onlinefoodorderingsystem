@@ -12,4 +12,5 @@ public interface IOrderService
     Task<List<OrderVm>> GetAllOrders();
     // Get orders by user ID (for customer use)
     Task<List<OrderVm>> GetOrdersByUserId(int userId); // Fetch orders specific to the logged-in user
+    Task CancelOrder(int orderId, int userID); // Delete an order by its ID
 }

@@ -52,6 +52,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 vm.Name = user.Name;
                 vm.Email = user.Email;
                 vm.Password = user.Password;
+                vm.IsVerified = user.IsVerified;
 
                 return View(vm);
             }
@@ -80,6 +81,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 dto.Name = vm.Name;
                 dto.Email = vm.Email;
                 dto.Password = vm.Password;
+                dto.IsVerified = vm.IsVerified;
 
                 await userService.UpdateUser(id, dto);
                 return RedirectToAction("Index");

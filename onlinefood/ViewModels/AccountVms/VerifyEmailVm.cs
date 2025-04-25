@@ -1,7 +1,7 @@
 // ViewModels/VerifyEmailVm.cs
 using System.ComponentModel.DataAnnotations;
 
-namespace onlinefood.ViewModels
+namespace onlinefood.ViewModels.AccountVms
 {
     public class VerifyEmailVm
     {

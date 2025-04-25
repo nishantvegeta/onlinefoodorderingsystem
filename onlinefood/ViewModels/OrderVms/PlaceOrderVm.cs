@@ -30,4 +30,7 @@ public class PlaceOrderVm
     public PaymentMethod PaymentMethod { get; set; }
 
     public IEnumerable<SelectListItem> PaymentMethods { get; set; }
+
+    [Required(ErrorMessage = "Select at least one cart item")]
+    public List<int> CartItemIds { get; set; } = new List<int>();
 }

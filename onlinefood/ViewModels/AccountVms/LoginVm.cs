@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace onlinefood.ViewModels;
+namespace onlinefood.ViewModels.AccountVms;
 
 public class LoginVm
 {
