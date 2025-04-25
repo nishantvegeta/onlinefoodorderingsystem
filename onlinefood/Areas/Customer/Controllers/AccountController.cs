@@ -68,44 +68,51 @@ namespace onlinefood.Areas.Customer.Controllers
         [Authorize]
         public async Task<IActionResult> EditProfile(int id, ProfileVm vm)
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(vm);
+                }
+
+                var user = await dbContext.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (!string.IsNullOrEmpty(vm.Password) && userService.VerifyPassword(vm.Password, user.Password))
+                {
+                    ModelState.AddModelError("Password", "The new password cannot be the same as the current password.");
+                    return View(vm); // Return with error if new password is the same as the current password
+                }
+
+                var dto = new UserUpdateDto();
+                dto.Name = vm.Name;
+                dto.Email = vm.Email;
+                dto.IsVerified = vm.IsVerified;
+
+                if (!string.IsNullOrEmpty(vm.Password) && vm.Password == vm.ConfirmPassword)
+                {
+                    // Hash the new password and update
+                    user.Password = userService.HashPassword(vm.Password);
+                }
+                else if (!string.IsNullOrEmpty(vm.Password) && vm.Password != vm.ConfirmPassword)
+                {
+                    ModelState.AddModelError("Password", "Password and confirmation password do not match.");
+                    return View(vm); // Return with error if passwords don't match
+                }
+
+                await userService.UpdateUser(id, dto);
+
+                TempData["Success"] = "Profile updated successfully!";
+                return RedirectToAction("ViewProfile");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while updating the profile: " + ex.Message);
                 return View(vm);
             }
-
-            var user = await dbContext.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!string.IsNullOrEmpty(vm.Password) && userService.VerifyPassword(vm.Password, user.Password))
-            {
-                ModelState.AddModelError("Password", "The new password cannot be the same as the current password.");
-                return View(vm); // Return with error if new password is the same as the current password
-            }
-
-            var dto = new UserUpdateDto();
-            dto.Name = vm.Name;
-            dto.Email = vm.Email;
-            dto.IsVerified = vm.IsVerified;
-
-            if (!string.IsNullOrEmpty(vm.Password) && vm.Password == vm.ConfirmPassword)
-            {
-                // Hash the new password and update
-                user.Password = userService.HashPassword(vm.Password);
-            }
-            else if (!string.IsNullOrEmpty(vm.Password) && vm.Password != vm.ConfirmPassword)
-            {
-                ModelState.AddModelError("Password", "Password and confirmation password do not match.");
-                return View(vm); // Return with error if passwords don't match
-            }
-
-            dbContext.Users.Update(user);
-            await dbContext.SaveChangesAsync();
-
-            TempData["Success"] = "Profile updated successfully!";
-            return RedirectToAction("ViewProfile");
         }
     }
 }
