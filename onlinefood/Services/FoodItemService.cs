@@ -191,5 +191,82 @@ public class FoodItemService : IFoodItemService
 
         return vm;
     }
+
+    public async Task<List<FoodItemVm>> GetFoodItemsByCategory(int categoryId)
+    {
+        var foodItems = await dbContext.FoodItems
+            .Include(x => x.Category)
+            .Where(x => x.CategoryId == categoryId)
+            .ToListAsync();
+
+        var vm = foodItems.Select(x => new FoodItemVm
+        {
+            FoodItemId = x.FoodItemId,
+            Name = x.Name,
+            Description = x.Description,
+            Price = x.Price,
+            ImageUrl = x.ImageUrl,
+            IsActive = x.IsActive,
+            CreatedDate = x.CreatedDate,
+            CategoryId = x.CategoryId,
+            CategoryName = x.Category.Name,
+            IsFeatured = x.IsFeatured
+        }).ToList();
+
+        return vm;
+    }
+
+    public async Task<FoodItemVm> GetFoodItemById(int id)
+    {
+        var foodItem = await dbContext.FoodItems
+            .Include(x => x.Category)
+            .Where(x => x.FoodItemId == id)
+            .FirstOrDefaultAsync();
+
+        if (foodItem == null)
+        {
+            throw new Exception("Food item not found");
+        }
+
+        var vm = new FoodItemVm
+        {
+            FoodItemId = foodItem.FoodItemId,
+            Name = foodItem.Name,
+            Description = foodItem.Description,
+            Price = foodItem.Price,
+            ImageUrl = foodItem.ImageUrl,
+            IsActive = foodItem.IsActive,
+            CreatedDate = foodItem.CreatedDate,
+            CategoryId = foodItem.CategoryId,
+            CategoryName = foodItem.Category.Name,
+            IsFeatured = foodItem.IsFeatured
+        };
+
+        return vm;
+    }
+
+    public async Task<List<FoodItemVm>> GetAllActiveFoodItems()
+    {
+        var foodItems = await dbContext.FoodItems.
+            Include(x => x.Category)
+            .Where(x => x.IsActive)
+            .ToListAsync();
+
+        var vm = foodItems.Select(x => new FoodItemVm
+        {
+            FoodItemId = x.FoodItemId,
+            Name = x.Name,
+            Description = x.Description,
+            Price = x.Price,
+            ImageUrl = x.ImageUrl,
+            IsActive = x.IsActive,
+            CreatedDate = x.CreatedDate,
+            CategoryId = x.CategoryId,
+            CategoryName = x.Category.Name,
+            IsFeatured = x.IsFeatured
+        }).ToList();
+
+        return vm;
+    }
 }
 

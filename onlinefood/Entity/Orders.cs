@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using onlinefood.Enums;
 
 namespace onlinefood.Entity;
 
@@ -26,4 +27,6 @@ public class Orders
 
     [Required(ErrorMessage = "Phone number is required")]
     public string Phone { get; set; }
+    public ICollection<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
+    public PaymentMethod PaymentMethod { get; set; }
 }

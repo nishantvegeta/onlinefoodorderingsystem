@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using onlinefood.Data;
 using onlinefood.Entity;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace onlinefood.Areas.Customer.Controllers
 {
@@ -22,6 +19,12 @@ namespace onlinefood.Areas.Customer.Controllers
         [AllowAnonymous]
         // GET: HomeController
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult About()
         {
             return View();
         }

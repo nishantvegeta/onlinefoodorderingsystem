@@ -1,1 +1,23 @@
-﻿
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Customer Panel</title>
+    <link rel="stylesheet" href="~/css/customer.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-area="Customer" asp-controller="Orders" asp-action="MyOrders">My Orders</a></li>
+                <li><a asp-area="Customer" asp-controller="Account" asp-action="Profile">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>

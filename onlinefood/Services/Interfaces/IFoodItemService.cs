@@ -13,4 +13,7 @@ public interface IFoodItemService
     Task<List<FoodItemVm>> GetAllFoodItems();
     Task<List<FoodItemDto>> SearchFoodItems(string searchTerm);
     Task<List<FoodItemVm>> GetFeaturedFoodItems();
+    Task<List<FoodItemVm>> GetFoodItemsByCategory(int categoryId);
+    Task<FoodItemVm> GetFoodItemById(int id);
+    Task<List<FoodItemVm>> GetAllActiveFoodItems();
 }

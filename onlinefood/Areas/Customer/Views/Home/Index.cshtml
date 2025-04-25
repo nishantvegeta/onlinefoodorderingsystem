@@ -1,1 +1,25 @@
-﻿<h1> hello customer</h1>
+﻿@{
+    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";  // Set the layout
+}
+
+<h2>Welcome to the Customer Dashboard</h2>
+
+<p>Explore our products, track your orders, and manage your profile!</p>
+
+<div class="feature-boxes">
+    <div class="feature">
+        <h3>Browse Products</h3>
+        <p>Explore the latest items and place your order today.</p>
+        <a asp-area="Customer" asp-controller="Products" asp-action="Index">Browse Products</a>
+    </div>
+    <div class="feature">
+        <h3>Track Your Orders</h3>
+        <p>Keep track of your order status and history.</p>
+        <a asp-area="Customer" asp-controller="Orders" asp-action="MyOrders">My Orders</a>
+    </div>
+    <div class="feature">
+        <h3>Manage Profile</h3>
+        <p>Update your profile and contact information.</p>
+        <a asp-area="Customer" asp-controller="Account" asp-action="Profile">Edit Profile</a>
+    </div>
+</div>

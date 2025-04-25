@@ -1,9 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using onlinefood.Enums;
 
 namespace onlinefood.ViewModels.OrderVms;
 
-public class CreateOrderVm
+public class PlaceOrderVm
 {
     [Required]
     public int UserId { get; set; }
@@ -23,4 +25,9 @@ public class CreateOrderVm
     [Required(ErrorMessage = "Phone number is required")]
     [Phone]
     public string Phone { get; set; }
+
+    [Required(ErrorMessage = "Select a payment method")]
+    public PaymentMethod PaymentMethod { get; set; }
+
+    public IEnumerable<SelectListItem> PaymentMethods { get; set; }
 }
