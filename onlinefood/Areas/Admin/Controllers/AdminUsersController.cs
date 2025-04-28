@@ -23,13 +23,24 @@ namespace onlinefood.Areas.Admin.Controllers
         // search user
         public async Task<IActionResult> Search(string searchTerm)
         {
-            var users = await userService.SearchUser(searchTerm); // Await the Task to get the result
-            if (users == null || !users.Any()) // Now you can use .Any() on the collection
+            try
             {
-                return NotFound("No users found");
-            }
+                if (string.IsNullOrEmpty(searchTerm))
+                {
+                    return BadRequest("Search term cannot be empty");
+                }
+                var users = await userService.SearchUser(searchTerm); // Await the Task to get the result
+                if (users == null || !users.Any()) // Now you can use .Any() on the collection
+                {
+                    return NotFound("No users found");
+                }
 
-            return View(users); // Return the users to the view
+                return View(users); // Return the users to the view
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: AdminUsersController

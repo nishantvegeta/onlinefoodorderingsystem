@@ -23,13 +23,25 @@ namespace onlinefood.Areas.Admin.Controllers
         // search categories
         public async Task<IActionResult> Search(string searchTerm)
         {
-            var categories = await categoryService.SearchCategories(searchTerm); // Await the Task to get the result
-            if (categories == null || !categories.Any()) // Now you can use .Any() on the collection
+            try
             {
-                return NotFound("No categories found");
-            }
+                if (string.IsNullOrEmpty(searchTerm))
+                {
+                    return BadRequest("Search term cannot be empty");
+                }
 
-            return View(categories); // Return the categories to the view
+                var categories = await categoryService.SearchCategories(searchTerm); // Await the Task to get the result
+                if (categories == null || !categories.Any()) // Now you can use .Any() on the collection
+                {
+                    return NotFound("No categories found");
+                }
+
+                return View(categories); // Return the categories to the view
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<IActionResult> Index()
