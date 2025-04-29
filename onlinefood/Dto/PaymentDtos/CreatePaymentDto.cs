@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using onlinefood.Enums;
 
 namespace onlinefood.Dto.PaymentDtos;
 
@@ -9,7 +10,7 @@ public class CreatePaymentDto
     public int OrderId { get; set; }
 
     [Required]
-    public string Provider { get; set; } = string.Empty;
+    public PaymentMethod PaymentMethod { get; set; } 
 
     [Required]
     public string PaymentToken { get; set; } = string.Empty;

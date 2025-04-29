@@ -19,8 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas/Customer/Views/Account/" />
     <Folder Include="Areas/Customer/Views/Cart/" />
+    <Folder Include="Areas/Customer/Views/Contact/" />
+    <Folder Include="Areas/Customer/Views/FoodItem/" />
     <Folder Include="Areas/Customer/Views/Order/" />
+    <Folder Include="Areas/Customer/Views/Payment/" />
     <Folder Include="wwwroot/customer-template/" />
   </ItemGroup>
 

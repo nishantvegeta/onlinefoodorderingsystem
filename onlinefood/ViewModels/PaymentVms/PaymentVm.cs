@@ -4,17 +4,14 @@ using onlinefood.Enums;
 
 namespace onlinefood.ViewModels.PaymentVms;
 
-public class CreatePaymentVm
+public class PaymentVm
 {
-    [Required]
+    public int PaymentId { get; set; }
     public int OrderId { get; set; }
-
-    [Required]
-    public PaymentMethod PaymentMethod{ get; set; }
-
-    [Required]
+    public string OrderStatus { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
     public string PaymentToken { get; set; }
-
-    [Required]
     public decimal Amount { get; set; }
+    public string Status { get; set; }
+    public DateTime PaidAt { get; set; }
 }

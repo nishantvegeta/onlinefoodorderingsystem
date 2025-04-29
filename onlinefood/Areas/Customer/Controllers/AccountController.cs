@@ -44,9 +44,10 @@ namespace onlinefood.Areas.Customer.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> EditProfile(int id)
+        public async Task<IActionResult> EditProfile()
         {
-            var user = await userService.GetUserById(id);
+            var userId = userService.GetCurrentUserId();
+            var user = await userService.GetUserById(userId);
             if (user == null)
             {
                 return NotFound();
@@ -66,7 +67,7 @@ namespace onlinefood.Areas.Customer.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> EditProfile(int id, ProfileVm vm)
+        public async Task<IActionResult> EditProfile(ProfileVm vm)
         {
             try
             {
@@ -75,7 +76,8 @@ namespace onlinefood.Areas.Customer.Controllers
                     return View(vm);
                 }
 
-                var user = await dbContext.Users.FindAsync(id);
+                var userId = userService.GetCurrentUserId();
+                var user = await dbContext.Users.FindAsync(userId);
                 if (user == null)
                 {
                     return NotFound();
@@ -103,7 +105,7 @@ namespace onlinefood.Areas.Customer.Controllers
                     return View(vm); // Return with error if passwords don't match
                 }
 
-                await userService.UpdateUser(id, dto);
+                await userService.UpdateUser(userId, dto);
 
                 TempData["Success"] = "Profile updated successfully!";
                 return RedirectToAction("ViewProfile");
