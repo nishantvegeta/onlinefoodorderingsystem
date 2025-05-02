@@ -1,4 +1,5 @@
 using System;
+using onlinefood.Enums;
 
 namespace onlinefood.ViewModels.OrderVms
 {
@@ -17,7 +18,7 @@ namespace onlinefood.ViewModels.OrderVms
 
         // Address (optional)
         public string DeliveryAddress { get; set; }
-
+        public PaymentMethod PaymentMethod { get; set; }
         // Ordered items
         public List<OrderItemVm> OrderItems { get; set; }
     }

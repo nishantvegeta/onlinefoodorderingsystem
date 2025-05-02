@@ -23,10 +23,10 @@
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Items)
+    @foreach (var item in Model.OrderItems)
     {
         <tr>
-            <td>@item.FoodItemName</td>
+            <td>@item.FoodName</td>
             <td>@item.Quantity</td>
             <td>@item.Price</td>
             <td>@(item.Price * item.Quantity)</td>
