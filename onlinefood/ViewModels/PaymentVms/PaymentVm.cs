@@ -6,8 +6,10 @@ namespace onlinefood.ViewModels.PaymentVms;
 
 public class PaymentVm
 {
+
     public int PaymentId { get; set; }
     public int OrderId { get; set; }
+    [Required]
     public string OrderStatus { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public string PaymentToken { get; set; }

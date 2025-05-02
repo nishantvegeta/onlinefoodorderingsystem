@@ -4,10 +4,12 @@ using onlinefood.ViewModels.CartItemVms;
 using onlinefood.Entity;
 using onlinefood.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace onlinefood.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [Authorize(Roles = "Customer")]
     public class CartController : Controller
     {
 
@@ -30,7 +32,7 @@ namespace onlinefood.Areas.Customer.Controllers
                 CartItems = cartItems,
                 TotalPrice = totalPrice
             };
-            return View(cartItems);
+            return View(cartViewModel);
         }
 
         [HttpPost]
@@ -56,7 +58,7 @@ namespace onlinefood.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while adding the item to the cart.");
+                TempData["Error"] = "An error occurred while adding the item to the cart.";
                 return BadRequest(ex.Message);
             }
         }
@@ -78,7 +80,7 @@ namespace onlinefood.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while removing the item from the cart.");
+                TempData["Error"] = "An error occurred while removing the item from the cart.";
                 return BadRequest(ex.Message);
             }
         }
@@ -99,7 +101,7 @@ namespace onlinefood.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while clearing the cart.");
+                TempData["Error"] = "An error occurred while clearing the cart."; 
                 return BadRequest(ex.Message);
             }
         }
@@ -117,7 +119,7 @@ namespace onlinefood.Areas.Customer.Controllers
 
                 if (quantity <= 0)
                 {
-                    ModelState.AddModelError("Quantity", "Quantity must be greater than zero.");
+                    TempData["Error"] = "Quantity must be greater than zero.";
                     return RedirectToAction("Index");
                 }
 
@@ -126,7 +128,7 @@ namespace onlinefood.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while updating the quantity.");
+                TempData["Error"] = "An error occurred while updating the quantity.";
                 return BadRequest(ex.Message);
             }
         }
@@ -150,23 +152,24 @@ namespace onlinefood.Areas.Customer.Controllers
                 var cartItems = await cartService.GetCartItems(userId);
                 if (cartItems == null || !cartItems.Any())
                 {
-                    ModelState.AddModelError("", "Your cart is empty.");
+                    TempData["Error"] = "Your cart is empty.";
                     return RedirectToAction("Index");
                 }
 
                 var totalPrice = await cartService.GetTotalPrice(userId);
                 if (totalPrice <= 0)
                 {
-                    ModelState.AddModelError("", "Total price must be greater than zero.");
+                    TempData["Error"] = "Total price must be greater than zero.";
                     return RedirectToAction("Index");
                 }
 
                 await cartService.PlaceOrder(userId);
+                TempData["Success"] = "Your order has been placed successfully!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while placing the order.");
+                TempData["Error"] = "An error occurred while placing the order.";
                 return BadRequest(ex.Message);
             }
         }
@@ -187,7 +190,7 @@ namespace onlinefood.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "An error occurred while retrieving the cart items.");
+                TempData["Error"] = "An error occurred while retrieving the cart items.";
                 return BadRequest(ex.Message);
             }
         }

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<onlinefood.ViewModels.OrderVms.OrderVm>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<h2>My Orders</h2>
+
+@if (Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.OrderDate.ToShortDateString()</td>
+                <td>@order.TotalAmount</td>
+                <td>@order.Status</td>
+                <td>
+                    <a asp-action="OrderDetails" asp-route-orderId="@order.OrderId" class="btn btn-info btn-sm">Details</a>
+
+                    @if (order.Status == "Pending")
+                    {
+                        <form asp-action="CancelOrder" asp-route-orderId="@order.OrderId" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No orders found.</p>
+}

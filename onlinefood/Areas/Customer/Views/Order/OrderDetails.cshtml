@@ -1,0 +1,36 @@
+﻿@model onlinefood.ViewModels.OrderVms.OrderDetailsVm
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h2>Order Details - #@Model.OrderId</h2>
+
+<p><strong>Date:</strong> @Model.OrderDate.ToShortDateString()</p>
+<p><strong>Status:</strong> @Model.Status</p>
+<p><strong>Total:</strong> @Model.TotalAmount</p>
+<p><strong>Delivery Address:</strong> @Model.DeliveryAddress</p>
+<p><strong>Payment Method:</strong> @Model.PaymentMethod</p>
+
+<h4>Items</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>@item.FoodItemName</td>
+            <td>@item.Quantity</td>
+            <td>@item.Price</td>
+            <td>@(item.Price * item.Quantity)</td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -140,11 +140,11 @@ public class FoodItemService : IFoodItemService
         return foodItemDtos;
     }
 
-    public async Task<List<FoodItemDto>> SearchFoodItems(string searchTerm)
+    public async Task<List<FoodItemVm>> SearchFoodItems(string searchTerm)
     {
         if (string.IsNullOrEmpty(searchTerm))
         {
-            return new List<FoodItemDto>();
+            return new List<FoodItemVm>();
         }
 
         var foodItems = await dbContext.FoodItems
@@ -152,7 +152,7 @@ public class FoodItemService : IFoodItemService
             .Where(x => x.Name.Contains(searchTerm))
             .ToListAsync();
 
-        var foodItemDtos = foodItems.Select(x => new FoodItemDto
+        var foodItemDtos = foodItems.Select(x => new FoodItemVm
         {
             FoodItemId = x.FoodItemId,
             Name = x.Name,

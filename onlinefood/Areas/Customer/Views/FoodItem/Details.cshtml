@@ -1,0 +1,25 @@
+﻿@model onlinefood.ViewModels.FoodItemVms.FoodItemVm
+
+@{
+    ViewData["Title"] = "Food Details";
+}
+
+<div class="card">
+    <div class="row no-gutters">
+        <div class="col-md-5">
+            <img src="@Model.ImageUrl" class="card-img" alt="@Model.Name" />
+        </div>
+        <div class="col-md-7">
+            <div class="card-body">
+                <h3 class="card-title">@Model.Name</h3>
+                <p class="card-text">@Model.Description</p>
+                <p class="card-text"><strong>Price:</strong> @Model.Price</p>
+                <p class="card-text"><strong>Category:</strong> @Model.CategoryName</p>
+                <p class="card-text">
+                    <strong>Status:</strong> @(Model.IsActive ? "Available" : "Unavailable")
+                </p>
+                <a href="#" class="btn btn-success">Add to Cart</a>
+            </div>
+        </div>
+    </div>
+</div>

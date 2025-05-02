@@ -1,0 +1,42 @@
+﻿@model onlinefood.ViewModels.PaymentVms.CreatePaymentVm
+
+@{
+    ViewData["Title"] = "Make Payment";
+}
+
+<h2>Make Payment</h2>
+
+<form asp-action="CreatePayment" method="post">
+    <input type="hidden" asp-for="OrderId" />
+
+    <div class="form-group">
+        <label asp-for="PaymentMethod" class="control-label"></label>
+        <select asp-for="PaymentMethod" class="form-control">
+            <option value="">-- Select Payment Method --</option>
+            <option value="0">Cash on Delivery</option>
+            <option value="1">Khalti</option>
+        </select>
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PaymentToken" class="control-label"></label>
+        <input asp-for="PaymentToken" class="form-control" />
+        <span asp-validation-for="PaymentToken" class="text-danger"></span>
+        <small class="form-text text-muted">
+            Enter Khalti token if using Khalti. Leave blank for Cash on Delivery.
+        </small>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Amount" class="control-label"></label>
+        <input asp-for="Amount" class="form-control" readonly />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Payment</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

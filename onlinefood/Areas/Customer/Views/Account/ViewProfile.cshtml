@@ -1,0 +1,33 @@
+﻿@model onlinefood.ViewModels.UserVms.ProfileVm
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<h2>My Profile</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card p-4">
+    <dl class="row">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Role</dt>
+        <dd class="col-sm-9">@Model.Role</dd>
+
+        <dt class="col-sm-3">Verified</dt>
+        <dd class="col-sm-9">@(Model.IsVerified ? "Yes" : "No")</dd>
+
+        <dt class="col-sm-3">Account Created</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    </dl>
+
+    <a asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>
+</div>

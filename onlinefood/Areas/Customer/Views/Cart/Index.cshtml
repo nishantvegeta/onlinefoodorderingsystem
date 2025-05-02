@@ -1,0 +1,109 @@
+﻿@model onlinefood.ViewModels.CartItemVms.CartVm
+
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.CartItems != null && Model.CartItems.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Food Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr id="cart-item-@item.CartItemId">
+                    <td>@item.FoodName</td>
+                    <td>@item.Price</td>
+                    <td>
+                        <input type="number" min="1" value="@item.Quantity" class="form-control quantity-input" data-cartitemid="@item.CartItemId" />
+                    </td>
+                    <td>@item.Total</td>
+                    <td>
+                        <button class="btn btn-danger remove-item" data-cartitemid="@item.CartItemId">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <h4>Total Price: @Model.TotalPrice</h4>
+        <button class="btn btn-success" id="place-order-button">Place Order</button>
+    </div>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Update Quantity
+            $('.quantity-input').change(function () {
+                var cartItemId = $(this).data('cartitemid');
+                var quantity = $(this).val();
+
+                if (quantity <= 0) {
+                    alert('Quantity must be greater than zero.');
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Cart")',
+                    type: 'POST',
+                    data: { foodItemId: cartItemId, quantity: quantity },
+                    success: function (response) {
+                        location.reload(); // Reload page to reflect changes in the cart
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred while updating the quantity.");
+                    }
+                });
+            });
+
+            // Remove Item
+            $('.remove-item').click(function () {
+                var cartItemId = $(this).data('cartitemid');
+
+                $.ajax({
+                    url: '@Url.Action("RemoveFromCart", "Cart")',
+                    type: 'POST',
+                    data: { foodItemId: cartItemId },
+                    success: function (response) {
+                        $('#cart-item-' + cartItemId).remove(); // Remove the item row from the table
+                        location.reload(); // Optionally reload the page to update total price and cart state
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred while removing the item.");
+                    }
+                });
+            });
+
+            // Place Order
+            $('#place-order-button').click(function () {
+                $.ajax({
+                    url: '@Url.Action("PlaceOrder", "Cart")',
+                    type: 'POST',
+                    success: function (response) {
+                        alert("Your order has been placed!");
+                        window.location.href = '@Url.Action("Index", "Home")'; // Redirect to home or a different page after order is placed
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred while placing the order.");
+                    }
+                });
+            });
+        });
+    </script>
+}

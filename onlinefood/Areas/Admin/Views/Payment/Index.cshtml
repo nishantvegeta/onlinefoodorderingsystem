@@ -1,0 +1,39 @@
+﻿@model List<onlinefood.ViewModels.PaymentVms.PaymentVm>
+
+@{
+    ViewData["Title"] = "All Payments";
+}
+
+<h2>All Payments</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>Order Status</th>
+            <th>Payment Method</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Paid At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in Model)
+        {
+            <tr>
+                <td>@payment.PaymentId</td>
+                <td>@payment.OrderId</td>
+                <td>@payment.OrderStatus</td>
+                <td>@payment.PaymentMethod</td>
+                <td>@payment.Amount.ToString("C")</td>
+                <td>@payment.Status</td>
+                <td>@payment.PaidAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@payment.PaymentId" class="btn btn-sm btn-primary">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

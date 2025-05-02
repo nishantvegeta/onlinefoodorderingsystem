@@ -1,0 +1,39 @@
+﻿@model onlinefood.ViewModels.PaymentVms.PaymentVm
+
+@{
+    ViewData["Title"] = "Payment Details";
+}
+
+<h2>Payment Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Payment ID</dt>
+            <dd class="col-sm-9">@Model.PaymentId</dd>
+
+            <dt class="col-sm-3">Order ID</dt>
+            <dd class="col-sm-9">@Model.OrderId</dd>
+
+            <dt class="col-sm-3">Order Status</dt>
+            <dd class="col-sm-9">@Model.OrderStatus</dd>
+
+            <dt class="col-sm-3">Payment Method</dt>
+            <dd class="col-sm-9">@Model.PaymentMethod</dd>
+
+            <dt class="col-sm-3">Payment Token</dt>
+            <dd class="col-sm-9">@Model.PaymentToken</dd>
+
+            <dt class="col-sm-3">Amount</dt>
+            <dd class="col-sm-9">@Model.Amount.ToString("C")</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.Status</dd>
+
+            <dt class="col-sm-3">Paid At</dt>
+            <dd class="col-sm-9">@Model.PaidAt.ToString("f")</dd>
+        </dl>
+
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

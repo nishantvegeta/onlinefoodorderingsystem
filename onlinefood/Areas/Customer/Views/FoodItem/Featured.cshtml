@@ -1,0 +1,24 @@
+﻿@model List<onlinefood.ViewModels.FoodItemVms.FoodItemVm>
+
+@{
+    ViewData["Title"] = "Featured Food Items";
+}
+
+<h2>Featured Dishes</h2>
+
+<div class="row">
+@foreach (var item in Model)
+{
+    <div class="col-md-4 mb-4">
+        <div class="card border-warning">
+            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
+            <div class="card-body">
+                <h5 class="card-title text-warning">@item.Name</h5>
+                <p>@item.Description</p>
+                <p><strong>Price:</strong> @item.Price</p>
+                <a asp-action="Details" asp-route-id="@item.FoodItemId" class="btn btn-warning">Order Now</a>
+            </div>
+        </div>
+    </div>
+}
+</div>
