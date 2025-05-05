@@ -160,7 +160,7 @@ public class UserService : IUserService
         var user = await dbContext.Users.FindAsync(id);
         if (user == null)
         {
-            throw new Exception("User not found");
+            throw new Exception("The user does not exist.");
         }
         var vm = new UserVm
         {
@@ -268,11 +268,17 @@ public class UserService : IUserService
     
     public int GetCurrentUserId()
     {
-        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);;
+        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirstValue("Id");
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            throw new Exception("User ID claim not found.");
+        }
+
         if (int.TryParse(userIdClaim, out var userId))
         {
             return userId;
         }
-        return 0; // Return 0 or handle error if user not found
+
+        throw new Exception("Failed to parse UserId.");
     }
 }

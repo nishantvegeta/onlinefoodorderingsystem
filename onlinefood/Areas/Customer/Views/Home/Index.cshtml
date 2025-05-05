@@ -1,25 +1,58 @@
 ﻿@{
-    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";  // Set the layout
+    ViewData["Title"] = "Home";
 }
 
-<h2>Welcome to the Customer Dashboard</h2>
+<style>
+    .hero-section {
+        background: #f8f9fa;
+        padding: 4rem 2rem;
+    }
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    .search-bar input, .search-bar select {
+        height: 48px;
+        margin-right: 8px;
+    }
+    .food-gallery img {
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+</style>
 
-<p>Explore our products, track your orders, and manage your profile!</p>
+<section class="hero-section text-center">
+    <div class="container">
+        <span class="badge bg-warning text-dark px-3 py-2 mb-3">🔥 Easy way to order your food</span>
+        <h1 class="hero-title mb-3">Discover the best food & drinks<br /> from top restaurants</h1>
+        <p class="text-muted mb-4">Browse, order and enjoy delicious meals delivered right to your door.</p>
 
-<div class="feature-boxes">
-    <div class="feature">
-        <h3>Browse Products</h3>
-        <p>Explore the latest items and place your order today.</p>
-        <a asp-area="Customer" asp-controller="Products" asp-action="Index">Browse Products</a>
+        <!-- Search bar -->
+        <form asp-action="Search" asp-controller="FoodItem" method="get" class="d-flex justify-content-center search-bar mb-5">
+            <select class="form-select w-auto" name="location">
+                <option selected>Location</option>
+                <option>Kathmandu</option>
+                <option>Lalitpur</option>
+                <option>Bhaktapur</option>
+            </select>
+            <input type="text" class="form-control w-50" placeholder="Search for restaurant or dish" name="searchTerm" />
+            <button class="btn btn-warning px-4">Search</button>
+        </form>
+
+        <!-- Food gallery -->
+        <div class="row justify-content-center food-gallery">
+            <div class="col-md-3 mb-4">
+                <img src="/images/healthyfood.jpeg" alt="Healthy Bowl">
+            </div>
+            <div class="col-md-3 mb-4">
+                <img src="/images/soup.jpeg" alt="Soup">
+            </div>
+            <div class="col-md-3 mb-4">
+                <img src="/images/currynaan.jpeg" alt="Curry and Naan">
+            </div>
+        </div>
     </div>
-    <div class="feature">
-        <h3>Track Your Orders</h3>
-        <p>Keep track of your order status and history.</p>
-        <a asp-area="Customer" asp-controller="Orders" asp-action="MyOrders">My Orders</a>
-    </div>
-    <div class="feature">
-        <h3>Manage Profile</h3>
-        <p>Update your profile and contact information.</p>
-        <a asp-area="Customer" asp-controller="Account" asp-action="Profile">Edit Profile</a>
-    </div>
-</div>
+</section>

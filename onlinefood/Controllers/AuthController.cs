@@ -145,7 +145,7 @@ namespace onlinefood.Controllers
             try
             {
                 await userService.Logout();
-                return RedirectToAction("Login");
+                return RedirectToAction("Index", "Home", new { area = "Customer" });
             }
             catch (Exception ex)
             {

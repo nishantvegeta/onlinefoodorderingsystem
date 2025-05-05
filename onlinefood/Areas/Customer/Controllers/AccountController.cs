@@ -23,22 +23,30 @@ namespace onlinefood.Areas.Customer.Controllers
         [Authorize]
         public async Task<IActionResult> ViewProfile()
         {
-            var userId = userService.GetCurrentUserId();
-            var user = await userService.GetUserById(userId);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                var userId = userService.GetCurrentUserId();
+                var user = await userService.GetUserById(userId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var vm = new ProfileVm();
+                vm.UserId = user.Id;
+                vm.Name = user.Name;
+                vm.Email = user.Email;
+                vm.Role = user.Role;
+                vm.IsVerified = user.IsVerified;
+
+                return View(vm);
             }
-
-            var vm = new ProfileVm();
-            vm.UserId = user.Id;
-            vm.Name = user.Name;
-            vm.Email = user.Email;
-            vm.Role = user.Role;
-            vm.IsVerified = user.IsVerified;
-
-            return View(vm);
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return View();
+            }
         }
 
 

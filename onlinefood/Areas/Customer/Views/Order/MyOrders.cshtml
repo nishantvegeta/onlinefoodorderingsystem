@@ -6,6 +6,11 @@
 
 <h2>My Orders</h2>
 
+@if (ViewBag.NoOrders != null)
+{
+    <div class="alert alert-info">@ViewBag.NoOrders</div>
+}
+
 @if (Model.Any())
 {
     <table class="table table-bordered">

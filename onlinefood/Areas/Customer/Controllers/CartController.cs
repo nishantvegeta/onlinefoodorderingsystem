@@ -5,11 +5,11 @@ using onlinefood.Entity;
 using onlinefood.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace onlinefood.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    [Authorize(Roles = "Customer")]
     public class CartController : Controller
     {
 
@@ -40,20 +40,18 @@ namespace onlinefood.Areas.Customer.Controllers
         {
             try
             {
-                if (User?.Identity == null || !User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
+                var userId = userService.GetCurrentUserId();
+                Console.WriteLine($"UserId: {userId}");
 
                 if (quantity <= 0)
                 {
                     ModelState.AddModelError("Quantity", "Quantity must be greater than zero.");
                     return RedirectToAction("Index");
                 }
-                var userId = userService.GetCurrentUserId();
 
                 await cartService.AddToCart(userId, foodItemId, quantity);
 
+                TempData["success"] = "Item added to cart successfully!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -69,11 +67,6 @@ namespace onlinefood.Areas.Customer.Controllers
             try
             {
                 var userId = userService.GetCurrentUserId();
-
-                if (User?.Identity == null || !User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
 
                 await cartService.RemoveFromCart(userId, foodItemId);
                 return RedirectToAction("Index");
@@ -91,10 +84,6 @@ namespace onlinefood.Areas.Customer.Controllers
             try
             {
                 var userId = userService.GetCurrentUserId();
-                if (User?.Identity == null || !User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
 
                 await cartService.ClearCart(userId);
                 return RedirectToAction("Index");
@@ -112,10 +101,6 @@ namespace onlinefood.Areas.Customer.Controllers
             try
             {
                 var userId = userService.GetCurrentUserId();
-                if (User?.Identity == null || !User.Identity.IsAuthenticated)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
 
                 if (quantity <= 0)
                 {
@@ -146,6 +131,7 @@ namespace onlinefood.Areas.Customer.Controllers
 
                 if (User?.Identity == null || !User.Identity.IsAuthenticated)
                 {
+                    TempData["Error"] = "You must be logged in to place an order.";
                     return RedirectToAction("Login", "Auth");
                 }
 

@@ -4,47 +4,63 @@ using onlinefood.Data;
 using onlinefood.ViewModels.CartItemVms;
 using onlinefood.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace onlinefood.Services;
 
 public class CartService : ICartService
 {
     private readonly FirstRunDbContext dbContext;
+    private readonly IUserService userService;
 
-    public CartService(FirstRunDbContext dbContext)
+    public CartService(FirstRunDbContext dbContext, IUserService userService)
     {
+        this.userService = userService;
         this.dbContext = dbContext;
     }
 
-    public async Task AddToCart(int UserId, int foodItemId, int quantity)
+    public async Task AddToCart(int userId, int foodItemId, int quantity)
     {
-        var foodItem = await dbContext.FoodItems.FindAsync(foodItemId);
-        if (foodItem == null)
+        try
         {
-            throw new Exception("Food item not found");
-        }
-
-        var cartItem = await dbContext.CartItems
-            .FirstOrDefaultAsync(ci => ci.UserId == UserId && ci.FoodItemId == foodItemId);
-
-        if (cartItem == null)
-        {
-            var newcartItem = new CartItems
+            var foodItem = await dbContext.FoodItems.FindAsync(foodItemId);
+            if (foodItem == null)
             {
-                UserId = UserId,
-                FoodItemId = foodItemId,
-                Quantity = quantity
-            };
-            dbContext.CartItems.Add(newcartItem);
-        }
-        else
-        {
-            cartItem.Quantity += quantity;
-            dbContext.CartItems.Update(cartItem);
-        }
+                throw new Exception("Food item not found");
+            }
 
-        await dbContext.SaveChangesAsync();
+            var cartItem = await dbContext.CartItems
+                .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.FoodItemId == foodItemId);
+
+            if (quantity <= 0)
+            {
+                throw new ArgumentException("Quantity must be greater than 0.");
+            }
+
+            if (cartItem == null)
+            {
+                var newcartItem = new CartItems
+                {
+                    UserId = userId,
+                    FoodItemId = foodItemId,
+                    Quantity = quantity
+                };
+                dbContext.CartItems.Add(newcartItem);
+            }
+            else
+            {
+                cartItem.Quantity += quantity;
+                dbContext.CartItems.Update(cartItem);
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+            throw;
+        }
     }
 
     public async Task RemoveFromCart(int userId, int foodItemId)
@@ -134,6 +150,10 @@ public class CartService : ICartService
         var cartItem = await dbContext.CartItems
             .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.FoodItemId == foodItemId);
 
+        if (quantity <= 0)
+        {
+            throw new ArgumentException("Quantity must be greater than 0.");
+        }
         if (cartItem != null)
         {
             cartItem.Quantity = quantity;

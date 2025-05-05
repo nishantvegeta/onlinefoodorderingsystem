@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using onlinefood.Data;
 using onlinefood.Dto.ContactDtos;
 using onlinefood.Entity;
+using onlinefood.Services;
 using onlinefood.Services.Interfaces;
 using onlinefood.ViewModels.ContactVms;
 
@@ -12,16 +13,22 @@ namespace onlinefood.Areas.Customer.Controllers
     {
         private readonly IContactService contactService;
         private readonly FirstRunDbContext dbContext;
-        public ContactController(IContactService contactService, FirstRunDbContext dbContext)
+        private readonly IUserService userService;
+        public ContactController(IContactService contactService, FirstRunDbContext dbContext, IUserService userService)
         {
             this.contactService = contactService;
             this.dbContext = dbContext;
+            this.userService = userService;
         }
 
         [HttpGet]
         public IActionResult CreateContact()
         {
-            var vm = new CreateContactVm();
+            var userId = userService.GetCurrentUserId();
+            var vm = new CreateContactVm
+            {
+                UserId = userId
+            };
             return View(vm);
         }
 
@@ -48,7 +55,7 @@ namespace onlinefood.Areas.Customer.Controllers
                 TempData["Success"] = "Contact created successfully!";
                 return RedirectToAction("Index", "Home");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["Error"] = "An error occurred while creating the contact.";
                 return View(vm);

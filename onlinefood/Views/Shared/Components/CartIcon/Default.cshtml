@@ -1,0 +1,9 @@
+﻿<a href="@Url.Action("Index", "Cart")" class="position-relative text-white mx-3">
+    <i class="fas fa-shopping-cart fa-lg"></i>
+    @if (Model > 0)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            @Model
+        </span>
+    }
+</a>

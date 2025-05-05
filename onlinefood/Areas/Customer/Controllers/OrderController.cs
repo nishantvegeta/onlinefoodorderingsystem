@@ -68,6 +68,10 @@ namespace onlinefood.Areas.Customer.Controllers
             {
                 var userId = userService.GetCurrentUserId();
                 var orders = await orderService.GetOrdersByUserId(userId);
+                if (orders == null || !orders.Any())
+                {
+                    ViewBag.NoOrders = "You haven't placed any orders yet.";
+                }
                 return View(orders);
             }
             catch (Exception ex)

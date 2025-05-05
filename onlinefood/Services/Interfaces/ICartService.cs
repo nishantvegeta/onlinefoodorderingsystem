@@ -5,7 +5,7 @@ namespace onlinefood.Services.Interfaces;
 
 public interface ICartService
 {
-    Task AddToCart(int UserId, int foodItemId, int quantity);
+    Task AddToCart(int userId, int foodItemId, int quantity);
     Task RemoveFromCart(int userId, int foodItemId);
     Task ClearCart(int userId);
     Task<List<CartItemVm>> GetCartItems(int userId);
