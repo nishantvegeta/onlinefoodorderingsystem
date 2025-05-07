@@ -1,19 +1,32 @@
 ﻿@model onlinefood.ViewModels.CartItemVms.CartVm
-
 @{
     ViewData["Title"] = "Your Cart";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2>Your Cart</h2>
 
-@if (Model.CartItems != null && Model.CartItems.Count > 0)
-{
+<div class="cart-container">
+    <!-- Displaying Success or Error Messages -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- Cart Items List -->
     <table class="table">
         <thead>
             <tr>
-                <th>Food Name</th>
-                <th>Price</th>
+                <th>Food Item</th>
                 <th>Quantity</th>
+                <th>Price</th>
                 <th>Total</th>
                 <th>Actions</th>
             </tr>
@@ -21,89 +34,80 @@
         <tbody>
             @foreach (var item in Model.CartItems)
             {
-                <tr id="cart-item-@item.CartItemId">
+                <tr>
                     <td>@item.FoodName</td>
-                    <td>@item.Price</td>
                     <td>
-                        <input type="number" min="1" value="@item.Quantity" class="form-control quantity-input" data-cartitemid="@item.CartItemId" />
+                        <div class="quantity-controls">
+                            <!-- Minus Button -->
+                            <form method="post" action="@Url.Action("UpdateQuantity", "Cart")" class="quantity-form">
+                                <input type="hidden" name="foodItemId" value="@item.FoodItemId" />
+                                <input type="hidden" name="quantity" value="@Math.Max(item.Quantity - 1, 1)" />
+                                <button type="submit" class="btn btn-secondary">-</button>
+                            </form>
+
+                            <!-- Display Quantity -->
+                            <span>@item.Quantity</span>
+
+                            <!-- Plus Button -->
+                            <form method="post" action="@Url.Action("UpdateQuantity", "Cart")" class="quantity-form">
+                                <input type="hidden" name="foodItemId" value="@item.FoodItemId" />
+                                <input type="hidden" name="quantity" value="@Math.Min(item.Quantity + 1, 100)" />
+                                <button type="submit" class="btn btn-secondary">+</button>
+                            </form>
+                        </div>
                     </td>
-                    <td>@item.Total</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@(item.Price * item.Quantity)</td>
                     <td>
-                        <button class="btn btn-danger remove-item" data-cartitemid="@item.CartItemId">Remove</button>
+                        <form method="post" action="@Url.Action("RemoveFromCart", "Cart")">
+                            <input type="hidden" name="foodItemId" value="@item.FoodItemId" />
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <div class="d-flex justify-content-between">
-        <h4>Total Price: @Model.TotalPrice</h4>
-        <button class="btn btn-success" id="place-order-button">Place Order</button>
+    <!-- Displaying Total Price -->
+    <div class="total-price">
+        <strong>Total Price: @Model.TotalPrice.ToString("C")</strong>
     </div>
-}
-else
-{
-    <p>Your cart is empty.</p>
-}
 
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Update Quantity
-            $('.quantity-input').change(function () {
-                var cartItemId = $(this).data('cartitemid');
-                var quantity = $(this).val();
+    <!-- Clear Cart Button -->
+    <form method="post" action="@Url.Action("ClearCart", "Cart")">
+        <button type="submit" class="btn btn-warning">Clear Cart</button>
+    </form>
 
-                if (quantity <= 0) {
-                    alert('Quantity must be greater than zero.');
-                    return;
-                }
+    <!-- Place Order Button -->
+    <form method="post" action="@Url.Action("PlaceOrder", "Cart")">
+        <button type="submit" class="btn btn-success">Place Order</button>
+    </form>
+</div>
 
-                $.ajax({
-                    url: '@Url.Action("UpdateQuantity", "Cart")',
-                    type: 'POST',
-                    data: { foodItemId: cartItemId, quantity: quantity },
-                    success: function (response) {
-                        location.reload(); // Reload page to reflect changes in the cart
-                    },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred while updating the quantity.");
-                    }
-                });
-            });
-
-            // Remove Item
-            $('.remove-item').click(function () {
-                var cartItemId = $(this).data('cartitemid');
-
-                $.ajax({
-                    url: '@Url.Action("RemoveFromCart", "Cart")',
-                    type: 'POST',
-                    data: { foodItemId: cartItemId },
-                    success: function (response) {
-                        $('#cart-item-' + cartItemId).remove(); // Remove the item row from the table
-                        location.reload(); // Optionally reload the page to update total price and cart state
-                    },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred while removing the item.");
-                    }
-                });
-            });
-
-            // Place Order
-            $('#place-order-button').click(function () {
-                $.ajax({
-                    url: '@Url.Action("PlaceOrder", "Cart")',
-                    type: 'POST',
-                    success: function (response) {
-                        alert("Your order has been placed!");
-                        window.location.href = '@Url.Action("Index", "Home")'; // Redirect to home or a different page after order is placed
-                    },
-                    error: function (xhr, status, error) {
-                        alert("An error occurred while placing the order.");
-                    }
-                });
-            });
-        });
-    </script>
-}
+<style>
+    .cart-container {
+        margin-top: 20px;
+    }
+    .total-price {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .table th, .table td {
+        text-align: center;
+    }
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .quantity-controls button {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+    }
+    .quantity-controls span {
+        font-size: 1.2em;
+    }
+</style>

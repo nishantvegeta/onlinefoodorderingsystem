@@ -67,8 +67,10 @@ namespace onlinefood.Areas.Customer.Controllers
             try
             {
                 var userId = userService.GetCurrentUserId();
+                Console.WriteLine($"UserId: {userId}");
 
                 await cartService.RemoveFromCart(userId, foodItemId);
+                TempData["Success"] = "Item removed from cart successfully!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -86,11 +88,12 @@ namespace onlinefood.Areas.Customer.Controllers
                 var userId = userService.GetCurrentUserId();
 
                 await cartService.ClearCart(userId);
+                TempData["Success"] = "Cart cleared successfully!";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "An error occurred while clearing the cart."; 
+                TempData["Error"] = "An error occurred while clearing the cart.";
                 return BadRequest(ex.Message);
             }
         }
@@ -100,24 +103,39 @@ namespace onlinefood.Areas.Customer.Controllers
         {
             try
             {
+                // Get the current user ID
                 var userId = userService.GetCurrentUserId();
 
+                // Validate that the quantity is greater than zero
                 if (quantity <= 0)
                 {
                     TempData["Error"] = "Quantity must be greater than zero.";
                     return RedirectToAction("Index");
                 }
 
+                // You can also add a maximum limit for the quantity, if required
+                if (quantity > 100) // Example: Maximum quantity limit
+                {
+                    TempData["Error"] = "You cannot add more than 100 of this item.";
+                    return RedirectToAction("Index");
+                }
+
+                // Call the cart service to update the quantity of the food item
                 await cartService.UpdateQuantity(userId, foodItemId, quantity);
+                TempData["Success"] = "Quantity updated successfully!"; 
+
+                // Redirect back to the cart page
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "An error occurred while updating the quantity.";
+                // Handle unexpected errors
+                TempData["Error"] = "An unexpected error occurred while updating the quantity.";
                 return BadRequest(ex.Message);
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PlaceOrder()
         {
@@ -125,11 +143,6 @@ namespace onlinefood.Areas.Customer.Controllers
             {
                 var userId = userService.GetCurrentUserId();
                 if (userId == 0)
-                {
-                    return RedirectToAction("Login", "Auth");
-                }
-
-                if (User?.Identity == null || !User.Identity.IsAuthenticated)
                 {
                     TempData["Error"] = "You must be logged in to place an order.";
                     return RedirectToAction("Login", "Auth");

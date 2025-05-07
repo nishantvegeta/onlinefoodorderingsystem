@@ -65,6 +65,13 @@ public class CartService : ICartService
 
     public async Task RemoveFromCart(int userId, int foodItemId)
     {
+        var foodItem = await dbContext.FoodItems.FindAsync(foodItemId);
+        if (foodItem == null)
+        {
+            throw new Exception("Food item not found");
+        }
+
+        // Check if the cart item exists
         var cartItem = await dbContext.CartItems
             .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.FoodItemId == foodItemId);
 
