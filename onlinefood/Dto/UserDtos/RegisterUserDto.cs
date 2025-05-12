@@ -21,6 +21,10 @@ public class RegisterUserDto
     [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; }
 
+    [Required]
+    [Phone]
+    public string Phone { get; set; }
+
     public string Role { get; set; } = "User";
 
     public bool IsVerified { get; set; } = false;

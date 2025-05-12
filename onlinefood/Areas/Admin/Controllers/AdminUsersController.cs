@@ -63,6 +63,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 vm.Name = user.Name;
                 vm.Email = user.Email;
                 vm.Password = user.Password;
+                vm.Phone = user.Phone;
                 vm.IsVerified = user.IsVerified;
 
                 return View(vm);
@@ -92,6 +93,7 @@ namespace onlinefood.Areas.Admin.Controllers
                 dto.Name = vm.Name;
                 dto.Email = vm.Email;
                 dto.Password = vm.Password;
+                dto.Phone = vm.Phone;
                 dto.IsVerified = vm.IsVerified;
 
                 await userService.UpdateUser(id, dto);

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace onlinefood.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class OrderController : Controller
     {
 
@@ -88,12 +89,12 @@ namespace onlinefood.Areas.Customer.Controllers
             try
             {
                 var userId = userService.GetCurrentUserId();
-                var order = await orderService.GetOrderById(orderId, userId);
-                if (order == null)
+                var orderDetails = await orderService.GetOrderById(userId, orderId);
+                if (orderDetails == null)
                 {
                     return NotFound();
                 }
-                return View(order);
+                return View(orderDetails);
             }
             catch (Exception ex)
             {

@@ -24,5 +24,9 @@ public class RegisterVm
 
     public string Role { get; set; } = "User";
 
+    [Required(ErrorMessage = "Phone number is required")]
+    [Phone(ErrorMessage = "Invalid phone number format")]
+    public string Phone { get; set; }
+
     public bool IsVerified { get; set; } = false;
 }

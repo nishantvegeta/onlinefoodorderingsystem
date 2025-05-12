@@ -133,11 +133,19 @@ public class CartService : ICartService
         {
             throw new Exception("Cart is empty");
         }
+        // Check if the user exists
+        var user = await dbContext.Users.FindAsync(userId);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
 
         var order = new Orders
         {
             UserId = userId,
-            OrderDate = DateTime.Now,
+            Email = user.Email,
+            Phone = user.Phone,
+            OrderDate = DateTime.UtcNow,
             TotalAmount = cartItems.Sum(ci => ci.Quantity * ci.FoodItem.Price),
             OrderDetails = cartItems.Select(ci => new OrderDetails
             {

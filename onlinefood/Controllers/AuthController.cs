@@ -42,6 +42,7 @@ namespace onlinefood.Controllers
                 userDto.Password = vm.Password;
                 userDto.ConfirmPassword = vm.ConfirmPassword;
                 userDto.Role = vm.Role;
+                userDto.Phone = vm.Phone;
                 userDto.IsVerified = vm.IsVerified;
 
                 await userService.RegisterUser(userDto);

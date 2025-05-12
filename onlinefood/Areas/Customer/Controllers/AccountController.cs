@@ -67,6 +67,7 @@ namespace onlinefood.Areas.Customer.Controllers
                 Name = user.Name,
                 Email = user.Email,
                 Role = user.Role,
+                Phone = user.Phone,
                 IsVerified = user.IsVerified
             };
 
@@ -100,6 +101,7 @@ namespace onlinefood.Areas.Customer.Controllers
                 var dto = new UserUpdateDto();
                 dto.Name = vm.Name;
                 dto.Email = vm.Email;
+                dto.Phone = vm.Phone;
                 dto.IsVerified = vm.IsVerified;
 
                 if (!string.IsNullOrEmpty(vm.Password) && vm.Password == vm.ConfirmPassword)

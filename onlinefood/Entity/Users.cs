@@ -22,6 +22,10 @@ public class Users
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    [Required(ErrorMessage = "Phone number is required")]
+    [Phone]
+    [StringLength(15, ErrorMessage = "Phone number cannot be longer than 10 characters")]
+    public string Phone { get; set; } = string.Empty;
     public string Role { get; set; } = "User"; // Default role is User
 
     public bool IsVerified { get; set; } = false;

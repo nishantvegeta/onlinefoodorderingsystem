@@ -32,6 +32,9 @@ else
 
             <dt class="col-sm-3">Account Created</dt>
             <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+            
+            <dt class="col-sm-3">Phone</dt>
+            <dd class="col-sm-9">@Model.Phone</dd>
         </dl>
 
         <a asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>

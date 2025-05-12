@@ -30,8 +30,18 @@
             <input type="password" class = "form-control" asp-for="ConfirmPassword" />
             <span asp-validation-for = "ConfirmPassword" class = "text-danger"></span>
         </div>
+        <div>
+            <label asp-for = "Phone"></label> 
+            <input type="text" class = "form-control" asp-for="Phone" />
+            <span asp-validation-for = "Phone" class = "text-danger"></span>
+        </div>
         <input type="hidden" asp-for="IsVerified" />
         <input type="hidden" asp-for="Role" />
+    </div>
+    <div class = "card-body">
+        <p> Already Have Account? 
+            <a asp-controller="Auth" asp-action="Login">Login Here</a>
+        </p>
     </div>
     <div class = "card-footer">
         <button class = "btn btn-success">Create</button>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using onlinefood.Data;
@@ -11,9 +12,11 @@ using onlinefood.Data;
 namespace onlinefood.Migrations
 {
     [DbContext(typeof(FirstRunDbContext))]
-    partial class FirstRunDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512084759_MakePhoneNullable")]
+    partial class MakePhoneNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,11 +334,6 @@ namespace onlinefood.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
@@ -353,7 +351,6 @@ namespace onlinefood.Migrations
                             IsVerified = true,
                             Name = "Admin",
                             Password = "$2a$12$vYvdlAR/4cXJBFHs3LsOhuGt75LSUazrHsW7skY/Lc4rr/CsCDfPC",
-                            Phone = "",
                             Role = "Admin"
                         });
                 });

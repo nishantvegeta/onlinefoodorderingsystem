@@ -71,25 +71,36 @@ namespace onlinefood.Services.Interfaces
             txn.Complete();
         }
 
-        public async Task<OrderVm> GetOrderById(int userId, int orderId)
+        public async Task<OrderDetailsVm> GetOrderById(int userId, int orderId)
         {
             var order = await dbContext.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.FoodItem)
                 .Where(x => x.UserId == userId && x.OrderId == orderId)
-                .Select(x => new OrderVm
-                {
-                    OrderId = x.OrderId,
-                    CustomerName = x.CustomerName,
-                    DeliveryAddress = x.DeliveryAddress,
-                    TotalAmount = x.TotalAmount,
-                    OrderDate = x.OrderDate,
-                    Status = x.Status,
-                })
                 .FirstOrDefaultAsync();
 
             if (order == null)
+            {
                 throw new Exception("Order not found");
+            }
 
-            return order;
+            var orderDetailsVm = new OrderDetailsVm
+            {
+                OrderId = order.OrderId,
+                CustomerName = order.CustomerName,
+                DeliveryAddress = order.DeliveryAddress,
+                TotalAmount = order.TotalAmount,
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                OrderItems = order.OrderDetails.Select(od => new OrderItemVm
+                {
+                    FoodName = od.FoodItem.Name,
+                    Quantity = od.Quantity,
+                    Price = od.PriceAtOrderTimex,
+                }).ToList()
+            };
+
+            return orderDetailsVm;
         }
 
         public async Task UpdateOrderStatus(UpdateOrderStatusDto dto)

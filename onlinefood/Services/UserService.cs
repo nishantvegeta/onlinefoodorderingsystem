@@ -120,13 +120,14 @@ public class UserService : IUserService
         var httpContext = httpContextAccessor.HttpContext;
         var claims = new List<Claim>
         {
-            new ("Id", user.UserId.ToString()),
+            new (ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new (ClaimTypes.Name, user.Name),
             new (ClaimTypes.Role, user.Role),
         };
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            new ClaimsPrincipal(claimsIdentity));
+        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+        await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
         return user;
     }
@@ -138,7 +139,14 @@ public class UserService : IUserService
         {
             throw new Exception("HttpContext is null");
         }
-        await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        try
+        {
+            await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error during sign out: " + ex.Message);
+        }
     }
 
     public async Task<List<UserVm>> GetAllUsers()
@@ -216,20 +224,42 @@ public class UserService : IUserService
 
     public async Task UpdateUser(int id, UserUpdateDto userDto)
     {
-        using var txn = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         var user = await dbContext.Users.Where(x => x.UserId == id).FirstOrDefaultAsync();
         if (user == null)
         {
             throw new Exception("User not found");
         }
 
+        // Validate and update the name and email
         user.Name = userDto.Name;
-        user.Email = userDto.Email;
-        user.Password = HashPassword(userDto.Password);
+
+        // Check if the email is already in use by another user
+        if (userDto.Email != user.Email)
+        {
+            bool emailExists = await dbContext.Users.AnyAsync(u => u.Email == userDto.Email);
+            if (emailExists)
+            {
+                throw new Exception("Email is already taken by another user.");
+            }
+
+            user.Email = userDto.Email;
+        }
+
+        // Update phone number if provided
+        if (!string.IsNullOrEmpty(userDto.Phone))
+        {
+            user.Phone = userDto.Phone;
+        }
+
+        // Only update password if provided
+        if (!string.IsNullOrEmpty(userDto.Password))
+        {
+            // Optionally, validate password strength here
+            user.Password = HashPassword(userDto.Password);
+        }
 
         dbContext.Users.Update(user);
         await dbContext.SaveChangesAsync();
-        txn.Complete();
     }
 
     public async Task DeleteUser(int id)
@@ -265,10 +295,11 @@ public class UserService : IUserService
                 IsVerified = u.IsVerified,
             }).ToListAsync();
     }
-    
+
     public int GetCurrentUserId()
     {
-        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirstValue("Id");
+        var userIdClaim = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier)
+                      ?? httpContextAccessor.HttpContext?.User?.FindFirstValue("Id");
         if (string.IsNullOrEmpty(userIdClaim))
         {
             throw new Exception("User ID claim not found.");

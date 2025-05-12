@@ -17,5 +17,8 @@ public class UserUpdateDto
 
     public string Password { get; set; }
 
+    [Phone]
+    public string Phone { get; set; }
+
     public bool IsVerified { get; set; }
 }

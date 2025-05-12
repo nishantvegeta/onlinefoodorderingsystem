@@ -25,6 +25,9 @@ public class ProfileVm
 
     public bool IsVerified { get; set; } = false;
 
+    [Phone(ErrorMessage = "Invalid phone number format")]
+    public string Phone { get; set; }
+
     // Optional: Add a property for the "current" password if you plan to let the user change it.
     [Compare("Password", ErrorMessage = "Passwords must match.")]
     public string ConfirmPassword { get; set; } = string.Empty; // For changing password
