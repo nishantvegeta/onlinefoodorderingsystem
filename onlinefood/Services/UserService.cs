@@ -67,6 +67,7 @@ public class UserService : IUserService
             Password = HashPassword(UserDto.Password), // Ensure secure hashing
             Role = "User",
             IsVerified = false,
+            Phone = UserDto.Phone,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -158,6 +159,8 @@ public class UserService : IUserService
             Name = u.Name,
             Email = u.Email,
             Role = u.Role,
+            Phone = u.Phone,
+            CreatedAt = u.CreatedAt,
             IsVerified = u.IsVerified,
         }).ToList();
         return userDtos;
@@ -176,6 +179,8 @@ public class UserService : IUserService
             Name = user.Name,
             Email = user.Email,
             Role = user.Role,
+            Phone = user.Phone,
+            CreatedAt = user.CreatedAt,
             IsVerified = user.IsVerified,
         };
         return vm;
@@ -194,6 +199,7 @@ public class UserService : IUserService
             Name = user.Name,
             Email = user.Email,
             Role = user.Role,
+            Phone = user.Phone,
             IsVerified = user.IsVerified,
             CreatedAt = user.CreatedAt
         };
@@ -292,6 +298,8 @@ public class UserService : IUserService
                 Name = u.Name,
                 Email = u.Email,
                 Role = u.Role,
+                Phone = u.Phone,
+                CreatedAt = u.CreatedAt,
                 IsVerified = u.IsVerified,
             }).ToListAsync();
     }

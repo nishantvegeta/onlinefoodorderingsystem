@@ -21,4 +21,6 @@ public class UserVm
     public bool IsVerified { get; set; }
     public string Password { get; set; } = string.Empty; // For changing password
 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;// Default to current UTC time
+
 }

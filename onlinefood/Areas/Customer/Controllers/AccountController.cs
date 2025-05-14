@@ -38,6 +38,8 @@ namespace onlinefood.Areas.Customer.Controllers
                 vm.Name = user.Name;
                 vm.Email = user.Email;
                 vm.Role = user.Role;
+                vm.Phone = user.Phone;
+                vm.CreatedAt = user.CreatedAt;
                 vm.IsVerified = user.IsVerified;
 
                 return View(vm);
