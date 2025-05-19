@@ -6,6 +6,7 @@ using onlinefood.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using onlinefood.Enums;
 
 namespace onlinefood.Areas.Customer.Controllers
 {
@@ -137,8 +138,9 @@ namespace onlinefood.Areas.Customer.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder()
+        public async Task<IActionResult> PlaceOrder(PaymentMethod paymentMethod)
         {
+            Console.WriteLine($"Payment Method ------------------------------>: {paymentMethod}");
             try
             {
                 var userId = userService.GetCurrentUserId();
@@ -162,7 +164,7 @@ namespace onlinefood.Areas.Customer.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await cartService.PlaceOrder(userId);
+                await cartService.PlaceOrder(userId, paymentMethod);
                 TempData["Success"] = "Your order has been placed successfully!";
                 return RedirectToAction("Index");
             }

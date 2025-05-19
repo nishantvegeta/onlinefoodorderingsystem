@@ -5,6 +5,7 @@ using onlinefood.ViewModels.CartItemVms;
 using onlinefood.Entity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using onlinefood.Enums;
 
 namespace onlinefood.Services;
 
@@ -122,7 +123,7 @@ public class CartService : ICartService
         return total;
     }
 
-    public async Task PlaceOrder(int userId)
+    public async Task PlaceOrder(int userId, PaymentMethod paymentMethod)
     {
         var cartItems = await dbContext.CartItems
             .Include(ci => ci.FoodItem)
@@ -147,6 +148,7 @@ public class CartService : ICartService
             Phone = user.Phone,
             OrderDate = DateTime.UtcNow,
             TotalAmount = cartItems.Sum(ci => ci.Quantity * ci.FoodItem.Price),
+            PaymentMethod = paymentMethod,
             OrderDetails = cartItems.Select(ci => new OrderDetails
             {
                 FoodItemId = ci.FoodItemId,

@@ -81,7 +81,19 @@
 
     <!-- Place Order Button -->
     <form method="post" action="@Url.Action("PlaceOrder", "Cart")">
-        <button type="submit" class="btn btn-success">Place Order</button>
+        <div class="form-group mt-3">
+            <label><strong>Select Payment Method:</strong></label><br />
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" value="CashOnDelivery" />
+                <label class="form-check-label">Cash on Delivery</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" value="Khalti" />
+                <label class="form-check-label">Khalti</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">Place Order</button>
     </form>
 </div>
 

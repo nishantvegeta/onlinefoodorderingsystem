@@ -8,6 +8,7 @@ using onlinefood.Services;
 using onlinefood.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using onlinefood.ViewModels.PaymentVms;
 
 namespace onlinefood.Areas.Customer.Controllers
 {

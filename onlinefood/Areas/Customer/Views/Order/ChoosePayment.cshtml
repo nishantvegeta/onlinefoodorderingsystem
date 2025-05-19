@@ -1,0 +1,23 @@
+﻿@model onlinefood.ViewModels.PaymentVms.ChoosePaymentVm
+@using onlinefood.Enums
+
+<h2>Choose Payment Method</h2>
+<p>Total: NPR @Model.TotalAmount</p>
+
+<form asp-action="ChoosePayment" method="post">
+    <div>
+        <input type="radio" asp-for="SelectedPaymentMethod" value="@PaymentMethod.CashOnDelivery" />
+        <label for="CashOnDelivery">Cash on Delivery</label>
+    </div>
+    <div>
+        <input type="radio" asp-for="SelectedPaymentMethod" value="@PaymentMethod.Khalti" />
+        <label for="Khalti">Khalti</label>
+    </div>
+    <br />
+    <button type="submit">Continue</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div style="color:red;">@Html.ValidationSummary()</div>
+}

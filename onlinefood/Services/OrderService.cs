@@ -92,6 +92,7 @@ namespace onlinefood.Services.Interfaces
                 TotalAmount = order.TotalAmount,
                 OrderDate = order.OrderDate,
                 Status = order.Status,
+                PaymentMethod = order.PaymentMethod,
                 OrderItems = order.OrderDetails.Select(od => new OrderItemVm
                 {
                     FoodName = od.FoodItem.Name,
